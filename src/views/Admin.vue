@@ -45,22 +45,22 @@
                 <span>人员管理</span>
               </template>
               <el-menu-item-group>
-                <el-menu-item index="/admin/department" v-if="jurisdictions.indexOf('部门管理') > -1">部门管理</el-menu-item>
+                <el-menu-item
+                  index="/admin/department"
+                  v-if="jurisdictions.indexOf('部门管理') > -1"
+                >部门管理</el-menu-item>
                 <el-menu-item index="/admin/role" v-if="jurisdictions.indexOf('角色管理') > -1">角色管理</el-menu-item>
-                <el-menu-item index="/admin/jurisdiction" v-if="jurisdictions.indexOf('权限管理') > -1">权限管理</el-menu-item>
+                <el-menu-item
+                  index="/admin/jurisdiction"
+                  v-if="jurisdictions.indexOf('权限管理') > -1"
+                >权限管理</el-menu-item>
                 <el-menu-item index="/admin/user" v-if="jurisdictions.indexOf('用户管理') > -1">用户管理</el-menu-item>
               </el-menu-item-group>
             </el-submenu>
-            <el-submenu index="/notebook/book" v-if="jurisdictions.indexOf('狸知云笔记') > -1">
-              <template slot="title">
-                <i class="el-icon-s-management"></i>
-                <span>狸知云笔记</span>
-              </template>
-              <el-menu-item-group>
-                <el-menu-item index="/admin/book">笔记本</el-menu-item>
-                <el-menu-item index="/admin/edit">编辑器</el-menu-item>
-              </el-menu-item-group>
-            </el-submenu>
+            <el-menu-item index="/admin/book" v-if="jurisdictions.indexOf('狸知云笔记') > -1">
+              <i class="el-icon-s-management"></i>
+              <span slot="title">狸知云笔记</span>
+            </el-menu-item>
           </el-menu>
         </el-aside>
         <el-main>
@@ -90,7 +90,7 @@ export default {
     get_jurisdictions() {
       this.loading = true
       this.axios
-        .get(`${this.url}/person/jur/${this.$store.state.token}/`)
+        .get(`${this.url}/person/jur/`)
         .then(res => {
           if (res.data.code === 200) {
             this.jurisdictions = res.data.data
@@ -101,7 +101,7 @@ export default {
           this.loading = false
         })
         .catch(err => {
-          this.$message.error(err)
+          this.$message.error(err.message)
           this.loading = false
         })
     }

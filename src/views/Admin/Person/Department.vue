@@ -45,7 +45,7 @@
           <el-input v-model="form.name" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="部门描述">
-          <el-input v-model="form.describe" autocomplete="off"></el-input>
+          <el-input v-model="form.describe" autocomplete="off" @keyup.enter.native="add"></el-input>
         </el-form-item>
         <el-form-item label="父级部门">
           <el-input v-model="form.p_name" autocomplete="off" disabled></el-input>
@@ -53,7 +53,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="add()">确 定</el-button>
+        <el-button type="primary" @click="add">确 定</el-button>
       </div>
     </el-dialog>
     <el-dialog title="权限管理" :visible.sync="dialogManage" width="800px">
@@ -109,7 +109,7 @@ export default {
           newNode.describe = node.describe
           newNode.identity = node.identity
           newNode.p_name = node.p_name
-          newNode.children = this.getJsonTree(data, node.id)
+          newNode.children = this.toJsonTree(data, node.id)
           itemArr.push(newNode)
         }
       }
@@ -133,9 +133,7 @@ export default {
             })
             this.dialogManage = false
             this.$store.commit('refresh', new Date().getTime())
-            if (
-              this.$store.state.jurisdictions.indexOf('部门管理') < 0
-            ) {
+            if (this.$store.state.jurisdictions.indexOf('部门管理') < 0) {
               this.$router.push('/admin')
               return
             }
@@ -146,7 +144,7 @@ export default {
           this.loading = false
         })
         .catch(err => {
-          this.$message.error(err)
+          this.$message.error(err.message)
           this.loading = false
         })
     },
@@ -204,7 +202,7 @@ export default {
             this.loading = false
           })
           .catch(err => {
-            this.$message.error(err)
+            this.$message.error(err.message)
             this.loading = false
           })
       } else {
@@ -225,7 +223,7 @@ export default {
             this.loading = false
           })
           .catch(err => {
-            this.$message.error(err)
+            this.$message.error(err.message)
             this.loading = false
           })
       }
@@ -253,7 +251,7 @@ export default {
               this.loading = false
             })
             .catch(err => {
-              this.$message.error(err)
+              this.$message.error(err.message)
               this.loading = false
             })
         })
@@ -284,7 +282,7 @@ export default {
           this.loading = false
         })
         .catch(err => {
-          this.$message.error(err)
+          this.$message.error(err.message)
           this.loading = false
         })
     },
@@ -301,7 +299,7 @@ export default {
           this.loading = false
         })
         .catch(err => {
-          this.$message.error(err)
+          this.$message.error(err.message)
           this.loading = false
         })
     }
@@ -309,19 +307,20 @@ export default {
   mounted() {
     if (this.$store.state.jurisdictions.indexOf('部门管理') < 0) {
       this.axios
-        .get(`${this.url}/person/jur/${this.$store.state.token}/`)
+        .get(`${this.url}/person/jur/`)
         .then(res => {
           if (res.data.code === 200) {
             if (res.data.data.indexOf('部门管理') < 0) {
               this.$router.push('/admin')
               return
             }
+            this.$store.commit('jurisdictions', res.data.data)
           } else {
             console.log(res.data.msg)
           }
         })
         .catch(err => {
-          this.$message.error(err)
+          this.$message.error(err.message)
         })
     }
     this.get_departments()

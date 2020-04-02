@@ -82,7 +82,7 @@ export default {
     get_data() {
       this.loading = true
       this.axios
-        .get(`${this.url}/person/auth/${this.$store.state.token}/`)
+        .get(`${this.url}/person/auth/`)
         .then(res => {
           if (res.data.code === 200) {
             this.userinfo = res.data.data
@@ -93,14 +93,14 @@ export default {
           this.loading = false
         })
         .catch(err => {
-          this.$message.error(err)
+          this.$message.error(err.message)
           this.loading = false
         })
     },
     save(data) {
       this.loading = true
       this.axios
-        .put(`${this.url}/person/auth/${this.$store.state.token}/`, data)
+        .put(`${this.url}/person/auth/`, data)
         .then(res => {
           if (res.data.code === 200) {
             this.$message({
@@ -113,7 +113,7 @@ export default {
           this.loading = false
         })
         .catch(err => {
-          this.$message.error(err)
+          this.$message.error(err.message)
           this.loading = false
         })
     }

@@ -60,10 +60,10 @@
         <el-form :model="form" label-width="80px" style="margin-right: 40px">
           <el-divider content-position="left">基本信息</el-divider>
           <el-form-item label="用户名">
-            <el-input v-model="form.username" autocomplete="off"></el-input>
+            <el-input v-model="form.username" autocomplete="off" @keyup.enter.native="add"></el-input>
           </el-form-item>
           <el-form-item label="密码">
-            <el-input v-model="form.password" autocomplete="off"></el-input>
+            <el-input v-model="form.password" autocomplete="off" @keyup.enter.native="add"></el-input>
           </el-form-item>
           <el-form-item label="部门">
             <el-select v-model="form.department" placeholder="请选择所属部门">
@@ -78,20 +78,20 @@
             </el-select>
           </el-form-item>
           <el-form-item label="昵称">
-            <el-input v-model="form.nickname" autocomplete="off"></el-input>
+            <el-input v-model="form.nickname" autocomplete="off" @keyup.enter.native="add"></el-input>
           </el-form-item>
           <el-form-item label="邮箱">
-            <el-input v-model="form.email" autocomplete="off"></el-input>
+            <el-input v-model="form.email" autocomplete="off" @keyup.enter.native="add"></el-input>
           </el-form-item>
           <el-form-item label="电话">
-            <el-input v-model="form.phone" autocomplete="off"></el-input>
+            <el-input v-model="form.phone" autocomplete="off" @keyup.enter.native="add"></el-input>
           </el-form-item>
           <el-divider content-position="left">详细信息</el-divider>
           <el-form-item label="姓名">
-            <el-input v-model="form.userinfo.name" autocomplete="off"></el-input>
+            <el-input v-model="form.userinfo.name" autocomplete="off" @keyup.enter.native="add"></el-input>
           </el-form-item>
           <el-form-item label="年龄">
-            <el-input v-model="form.userinfo.age" autocomplete="off"></el-input>
+            <el-input v-model="form.userinfo.age" autocomplete="off" @keyup.enter.native="add"></el-input>
           </el-form-item>
           <el-form-item label="性别">
             <el-radio-group v-model="form.userinfo.sex">
@@ -107,7 +107,7 @@
       </div>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="add()">确 定</el-button>
+        <el-button type="primary" @click="add">确 定</el-button>
       </div>
     </el-dialog>
     <el-dialog title="权限管理" :visible.sync="dialogManage" width="800px">
@@ -177,7 +177,7 @@ export default {
           this.loading = false
         })
         .catch(err => {
-          this.$message.error(err)
+          this.$message.error(err.message)
           this.loading = false
         })
     },
@@ -208,7 +208,7 @@ export default {
               this.loading = false
             })
             .catch(err => {
-              this.$message.error(err)
+              this.$message.error(err.message)
               this.loading = false
             })
         })
@@ -238,7 +238,7 @@ export default {
             this.loading = false
           })
           .catch(err => {
-            this.$message.error(err)
+            this.$message.error(err.message)
             this.loading = false
           })
       } else {
@@ -259,7 +259,7 @@ export default {
             this.loading = false
           })
           .catch(err => {
-            this.$message.error(err)
+            this.$message.error(err.message)
             this.loading = false
           })
       }
@@ -284,7 +284,7 @@ export default {
           this.loading = false
         })
         .catch(err => {
-          this.$message.error(err)
+          this.$message.error(err.message)
           this.loading = false
         })
     },
@@ -309,7 +309,7 @@ export default {
           this.loading = false
         })
         .catch(err => {
-          this.$message.error(err)
+          this.$message.error(err.message)
           this.loading = false
         })
     },
@@ -326,7 +326,7 @@ export default {
           this.loading = false
         })
         .catch(err => {
-          this.$message.error(err)
+          this.$message.error(err.message)
           this.loading = false
         })
     },
@@ -343,7 +343,7 @@ export default {
           this.loading = false
         })
         .catch(err => {
-          this.$message.error(err)
+          this.$message.error(err.message)
           this.loading = false
         })
     },
@@ -366,33 +366,28 @@ export default {
           this.loading = false
         })
         .catch(err => {
-          this.$message.error(err)
+          this.$message.error(err.message)
           this.loading = false
         })
     }
   },
   mounted() {
-    // let data = {}
-    // res.value[0].data.forEach(function(item){
-    //   data[item['col1']] = item['col2']
-    // })
-    // this.cigs = data
-
     if (this.$store.state.jurisdictions.indexOf('用户管理') < 0) {
       this.axios
-        .get(`${this.url}/person/jur/${this.$store.state.token}/`)
+        .get(`${this.url}/person/jur/`)
         .then(res => {
           if (res.data.code === 200) {
             if (res.data.data.indexOf('用户管理') < 0) {
               this.$router.push('/admin')
               return
             }
+            this.$store.commit('jurisdictions', res.data.data)
           } else {
             console.log(res.data.msg)
           }
         })
         .catch(err => {
-          this.$message.error(err)
+          this.$message.error(err.message)
         })
     }
     this.get_users()

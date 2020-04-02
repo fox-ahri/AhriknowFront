@@ -28,6 +28,13 @@ body {
   color: #2c3e50;
   width: 100%;
   height: 100%;
+  .el-tree-node__expand-icon {
+    font-size: 22px;
+  }
+  .hljs{
+    padding: 12px;
+    font-size: 16px;
+  }
 }
 
 // #nav {

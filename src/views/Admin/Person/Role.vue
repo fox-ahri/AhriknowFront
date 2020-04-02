@@ -13,7 +13,7 @@
     </div>
     <el-divider></el-divider>
     <el-table
-      :data="departments.filter(data => !search || data.name.toLowerCase().includes(search.toLowerCase()))"
+      :data="roles.filter(data => !search || data.name.toLowerCase().includes(search.toLowerCase()))"
       style="width: 100%"
     >
       <el-table-column label="Name" prop="name"></el-table-column>
@@ -32,26 +32,30 @@
     <el-dialog title="角色管理" :visible.sync="dialogVisible" @close="close">
       <el-form :model="form" label-width="80px" style="margin-right: 40px">
         <el-form-item label="角色名称">
-          <el-input v-model="form.name" autocomplete="off"></el-input>
+          <el-input v-model="form.name" autocomplete="off" @keyup.enter.native="add"></el-input>
         </el-form-item>
         <el-form-item label="角色描述">
-          <el-input v-model="form.describe" autocomplete="off"></el-input>
+          <el-input v-model="form.describe" autocomplete="off" @keyup.enter.native="add"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="add()">确 定</el-button>
+        <el-button type="primary" @click="add">确 定</el-button>
       </div>
     </el-dialog>
     <el-dialog title="权限管理" :visible.sync="dialogManage" width="800px">
-      <el-transfer
-        :titles="['所有权限', '角色权限']"
-        filterable
-        :filter-method="filterMethod"
-        filter-placeholder="请输入权限搜索"
-        v-model="value"
+      <el-tree
         :data="jurisdictions"
-      ></el-transfer>
+        show-checkbox
+        default-expand-all
+        node-key="id"
+        ref="tree"
+        highlight-current
+        :props="{
+            children: 'children',
+            label: 'name'
+          }"
+      ></el-tree>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogManage = false">取 消</el-button>
         <el-button type="primary" @click="handlerManage">确 定</el-button>
@@ -66,20 +70,33 @@ export default {
   data() {
     return {
       search: '',
-      departments: [],
+      roles: [],
       jurisdictions: [],
       dialogVisible: false,
       dialogManage: false,
       loading: false,
       form: {},
-      value: [],
-      filterMethod(query, item) {
-        return item.name.indexOf(query) > -1
-      },
       current: {}
     }
   },
   methods: {
+    toJsonTree(data, parentId) {
+      var itemArr = []
+      for (var i = 0; i < data.length; i++) {
+        var node = data[i]
+        if (node.parent == parentId) {
+          var newNode = {}
+          newNode.id = node.id
+          newNode.name = node.name
+          newNode.describe = node.describe
+          newNode.identity = node.identity
+          newNode.p_name = node.p_name
+          newNode.children = this.toJsonTree(data, node.id)
+          itemArr.push(newNode)
+        }
+      }
+      return itemArr
+    },
     filterNode(value, data) {
       if (!value) return true
       return data.name.indexOf(value) !== -1
@@ -87,8 +104,8 @@ export default {
     handlerManage() {
       this.loading = true
       this.axios
-        .put(`${this.url}/person/department/${this.current.id}/`, {
-          jurisdiction: this.value
+        .put(`${this.url}/person/role/${this.current.id}/`, {
+          jurisdictions: this.$refs.tree.getCheckedKeys()
         })
         .then(res => {
           if (res.data.code === 200) {
@@ -98,20 +115,18 @@ export default {
             })
             this.dialogManage = false
             this.$store.commit('refresh', new Date().getTime())
-            if (
-              this.$store.state.jurisdictions.indexOf('系统管理-分组管理') < 0
-            ) {
+            if (this.$store.state.jurisdictions.indexOf('角色管理') < 0) {
               this.$router.push('/admin')
               return
             }
-            this.get_departments()
+            this.get_roles()
           } else {
             this.$message.error(res.data.msg)
           }
           this.loading = false
         })
         .catch(err => {
-          this.$message.error(err)
+          this.$message.error(err.message)
           this.loading = false
         })
     },
@@ -142,7 +157,7 @@ export default {
             this.loading = false
           })
           .catch(err => {
-            this.$message.error(err)
+            this.$message.error(err.message)
             this.loading = false
           })
       } else {
@@ -163,7 +178,7 @@ export default {
             this.loading = false
           })
           .catch(err => {
-            this.$message.error(err)
+            this.$message.error(err.message)
             this.loading = false
           })
       }
@@ -191,7 +206,7 @@ export default {
               this.loading = false
             })
             .catch(err => {
-              this.$message.error(err)
+              this.$message.error(err.message)
               this.loading = false
             })
         })
@@ -203,24 +218,26 @@ export default {
         })
     },
     manage(data) {
-      this.value = data.jurisdiction
       this.current = data
+      setTimeout(() => {
+        this.$refs.tree.setCheckedKeys(data.jurisdictions)
+      }, 10)
       this.dialogManage = true
     },
-    get_departments() {
+    get_roles() {
       this.loading = true
       this.axios
         .get(`${this.url}/person/role/`)
         .then(res => {
           if (res.data.code === 200) {
-            this.departments = res.data.data
+            this.roles = res.data.data
           } else {
             this.$message.error(res.data.msg)
           }
           this.loading = false
         })
         .catch(err => {
-          this.$message.error(err)
+          this.$message.error(err.message)
           this.loading = false
         })
     },
@@ -230,43 +247,38 @@ export default {
         .get(`${this.url}/person/jurisdiction/`)
         .then(res => {
           if (res.data.code === 200) {
-            res.data.data.forEach(item => {
-              this.jurisdictions.push({
-                label: item.name,
-                key: item.id,
-                name: item.name
-              })
-            })
+            this.jurisdictions = this.toJsonTree(res.data.data, null)
           } else {
             this.$message.error(res.data.msg)
           }
           this.loading = false
         })
         .catch(err => {
-          this.$message.error(err)
+          this.$message.error(err.message)
           this.loading = false
         })
     }
   },
   mounted() {
-    // if (this.$store.state.jurisdictions.indexOf('系统管理-分组管理') < 0) {
-    //   this.axios
-    //     .get(`${this.url}/person/jur/${this.$store.state.token}/`)
-    //     .then(res => {
-    //       if (res.data.code === 200) {
-    //         if (res.data.data.indexOf('系统管理-分组管理') < 0) {
-    //           this.$router.push('/admin')
-    //           return
-    //         }
-    //       } else {
-    //         console.log(res.data.msg)
-    //       }
-    //     })
-    //     .catch(err => {
-    //       this.$message.error(err)
-    //     })
-    // }
-    this.get_departments()
+    if (this.$store.state.jurisdictions.indexOf('角色管理') < 0) {
+      this.axios
+        .get(`${this.url}/person/jur/`)
+        .then(res => {
+          if (res.data.code === 200) {
+            if (res.data.data.indexOf('角色管理') < 0) {
+              this.$router.push('/admin')
+              return
+            }
+            this.$store.commit('jurisdictions', res.data.data)
+          } else {
+            console.log(res.data.msg)
+          }
+        })
+        .catch(err => {
+          this.$message.error(err.message)
+        })
+    }
+    this.get_roles()
     this.get_jurisdictions()
   }
 }

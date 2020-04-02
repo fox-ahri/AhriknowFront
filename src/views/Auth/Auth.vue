@@ -20,7 +20,13 @@
                 <label for="tab2">sign up</label>
               </div>
               <input type="text" name="username" v-model="form.username" placeholder="Username" />
-              <input type="password" name="password" v-model="form.password" placeholder="Password" />
+              <input
+                type="password"
+                name="password"
+                v-model="form.password"
+                placeholder="Password"
+                @keyup.13="login"
+              />
               <label for="tab3" style="display: none">Forget Your Password!</label>
               <button @click="login">登录</button>
             </div>
@@ -33,7 +39,13 @@
               </div>
               <input type="text" name="username" v-model="reg.username" placeholder="Username" />
               <input type="password" name="password" v-model="reg.password" placeholder="Password" />
-              <input type="password" name="re-pass" v-model="reg.re_pass" placeholder="Re password" />
+              <input
+                type="password"
+                name="re-pass"
+                v-model="reg.re_pass"
+                placeholder="Re password"
+                @keyup.13="signup"
+              />
               <button @click="signup">注册</button>
             </div>
           </div>
@@ -84,7 +96,7 @@ export default {
         .post(`${this.url}/person/auth/`, this.form)
         .then(res => {
           if (res.data.code === 200) {
-            this.$store.commit('token', res.data.data.id)
+            this.$store.commit('token', res.data.data.token)
             this.$router.push({ name: 'admin' })
           } else {
             this.$message.error(res.data.msg)
@@ -92,7 +104,7 @@ export default {
           this.loading = false
         })
         .catch(err => {
-          this.$message.error(err)
+          this.$message.error(err.message)
           this.loading = false
         })
     },
@@ -125,7 +137,7 @@ export default {
           this.loading = false
         })
         .catch(err => {
-          this.$message.error(err)
+          this.$message.error(err.message)
           this.loading = false
         })
     }

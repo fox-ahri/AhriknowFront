@@ -41,13 +41,13 @@
     <el-dialog title="权限管理" :visible.sync="dialogVisible" @close="close">
       <el-form :model="form" label-width="80px" style="margin-right: 40px">
         <el-form-item label="权限名称">
-          <el-input v-model="form.name" autocomplete="off" @keyup.enter.native="add()"></el-input>
+          <el-input v-model="form.name" autocomplete="off" @keyup.enter.native="add"></el-input>
         </el-form-item>
         <el-form-item label="权限描述">
-          <el-input v-model="form.describe" autocomplete="off" @keyup.enter.native="add()"></el-input>
+          <el-input v-model="form.describe" autocomplete="off" @keyup.enter.native="add"></el-input>
         </el-form-item>
         <el-form-item label="权限标识">
-          <el-input v-model="form.identity" autocomplete="off" @keyup.enter.native="add()"></el-input>
+          <el-input v-model="form.identity" autocomplete="off" @keyup.enter.native="add"></el-input>
         </el-form-item>
         <el-form-item label="父级权限">
           <el-input v-model="form.p_name" autocomplete="off" disabled></el-input>
@@ -55,7 +55,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="add()">确 定</el-button>
+        <el-button type="primary" @click="add">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -140,7 +140,7 @@ export default {
             this.loading = false
           })
           .catch(err => {
-            this.$message.error(err)
+            this.$message.error(err.message)
             this.loading = false
           })
       } else {
@@ -161,7 +161,7 @@ export default {
             this.loading = false
           })
           .catch(err => {
-            this.$message.error(err)
+            this.$message.error(err.message)
             this.loading = false
           })
       }
@@ -189,7 +189,7 @@ export default {
               this.loading = false
             })
             .catch(err => {
-              this.$message.error(err)
+              this.$message.error(err.message)
               this.loading = false
             })
         })
@@ -213,7 +213,7 @@ export default {
           this.loading = false
         })
         .catch(err => {
-          this.$message.error(err)
+          this.$message.error(err.message)
           this.loading = false
         })
     }
@@ -221,19 +221,20 @@ export default {
   mounted() {
     if (this.$store.state.jurisdictions.indexOf('权限管理') < 0) {
       this.axios
-        .get(`${this.url}/person/jur/${this.$store.state.token}/`)
+        .get(`${this.url}/person/jur/`)
         .then(res => {
           if (res.data.code === 200) {
             if (res.data.data.indexOf('权限管理') < 0) {
               this.$router.push('/admin')
               return
             }
+            this.$store.commit('jurisdictions', res.data.data)
           } else {
             console.log(res.data.msg)
           }
         })
         .catch(err => {
-          this.$message.error(err)
+          this.$message.error(err.message)
         })
     }
     this.get_jurisdictions()
