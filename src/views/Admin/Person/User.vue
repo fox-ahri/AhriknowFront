@@ -111,14 +111,18 @@
       </div>
     </el-dialog>
     <el-dialog title="权限管理" :visible.sync="dialogManage" width="800px">
-      <el-transfer
-        :titles="['所有权限', '用户权限']"
-        filterable
-        :filter-method="filterMethod"
-        filter-placeholder="请输入权限搜索"
-        v-model="value"
+      <el-tree
         :data="jurisdictions"
-      ></el-transfer>
+        show-checkbox
+        default-expand-all
+        node-key="id"
+        ref="tree"
+        highlight-current
+        :props="{
+            children: 'children',
+            label: 'name'
+          }"
+      ></el-tree>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogManage = false">取 消</el-button>
         <el-button type="primary" @click="handlerManage">确 定</el-button>
@@ -140,10 +144,6 @@ export default {
         userinfo: {},
         department: ''
       },
-      value: [],
-      filterMethod(query, item) {
-        return item.name.indexOf(query) > -1
-      },
       departments: [],
       roles: [],
       jurisdictions: [],
@@ -151,16 +151,35 @@ export default {
     }
   },
   methods: {
+    toJsonTree(data, parentId) {
+      var itemArr = []
+      for (var i = 0; i < data.length; i++) {
+        var node = data[i]
+        if (node.parent == parentId) {
+          var newNode = {}
+          newNode.id = node.id
+          newNode.name = node.name
+          newNode.describe = node.describe
+          newNode.identity = node.identity
+          newNode.p_name = node.p_name
+          newNode.children = this.toJsonTree(data, node.id)
+          itemArr.push(newNode)
+        }
+      }
+      return itemArr
+    },
     manage(data) {
-      this.value = data.jurisdiction
       this.current = data
+      setTimeout(() => {
+        this.$refs.tree.setCheckedKeys(data.jurisdictions)
+      }, 10)
       this.dialogManage = true
     },
     handlerManage() {
       this.loading = true
       this.axios
         .put(`${this.url}/person/user/${this.current.id}/`, {
-          jurisdiction: this.value
+          jurisdictions: this.$refs.tree.getCheckedKeys()
         })
         .then(res => {
           if (res.data.code === 200) {
@@ -354,11 +373,7 @@ export default {
         .then(res => {
           if (res.data.code === 200) {
             res.data.data.forEach(item => {
-              this.jurisdictions.push({
-                label: item.name,
-                key: item.id,
-                name: item.name
-              })
+              this.jurisdictions = this.toJsonTree(res.data.data, null)
             })
           } else {
             this.$message.error(res.data.msg)

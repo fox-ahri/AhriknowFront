@@ -16,8 +16,8 @@ import 'mavon-editor/dist/css/index.css'
 Vue.use(mavonEditor)
 
 Vue.config.productionTip = false
-Vue.prototype.url = "https://admin.ahriknow.com"
-// Vue.prototype.url = 'http://127.0.0.1'
+// Vue.prototype.url = "https://admin.ahriknow.com"
+Vue.prototype.url = 'http://127.0.0.1:8000'
 
 axios.interceptors.request.use(
 	request => {
