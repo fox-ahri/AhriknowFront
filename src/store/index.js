@@ -7,7 +7,7 @@ export default new Vuex.Store({
 	state: {
 		refresh: '',
 		token: localStorage.getItem('token'),
-		jurisdictions: []
+		jurisdictions: [],
 	},
 	mutations: {
 		refresh(state, time) {
@@ -19,8 +19,8 @@ export default new Vuex.Store({
 		},
 		jurisdictions(state, jurisdictions) {
 			state.jurisdictions = jurisdictions
-		}
+		},
 	},
 	actions: {},
-	modules: {}
+	modules: {},
 })

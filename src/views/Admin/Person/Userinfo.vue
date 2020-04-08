@@ -82,7 +82,7 @@ export default {
     get_data() {
       this.loading = true
       this.axios
-        .get(`${this.url}/person/auth/`)
+        .get(`${this.url}/admin/person/userinfo/`)
         .then(res => {
           if (res.data.code === 200) {
             this.userinfo = res.data.data
@@ -100,7 +100,7 @@ export default {
     save(data) {
       this.loading = true
       this.axios
-        .put(`${this.url}/person/auth/`, data)
+        .put(`${this.url}/admin/person/userinfo/`, data)
         .then(res => {
           if (res.data.code === 200) {
             this.$message({

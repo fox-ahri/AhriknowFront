@@ -45,26 +45,24 @@
       </el-aside>
       <el-main>
         <div class="opera">
-          <p>{{current.name}}</p>
-          <el-button type="primary" @click="save_content">保存</el-button>
-        </div>
-        <mavon-editor
-          v-model="content.content"
-          :tabSize="4"
-          codeStyle="atom-one-dark"
-          style="min-height: 600px"
-          @save="save_content"
-        />
-        <div class="opera">
+          <div v-show="current.name" class="name">{{current.name}}</div>
           <div></div>
-          <el-button type="primary" @click="save_content">保存</el-button>
+          <div>
+            <!-- <el-button @click="download" size="small">下载</el-button> -->
+            <el-button type="primary" @click="save_content" size="small">保存</el-button>
+          </div>
+        </div>
+        <div class="edit">
+          <mavon-editor
+            v-model="content.content"
+            :tabSize="4"
+            codeStyle="atom-one-dark"
+            style="height: 100%"
+            @save="save_content"
+          />
         </div>
       </el-main>
     </el-container>
-
-    <!-- <li v-for="(value, index) in cigs" :key="value.col1" :class="{cblBgd:changeBgd == index}"
-    class="item" @click.stop="changePp(value.col1, index, true)" v-text="value.col2"></li>-->
-
     <el-dialog title="新建笔记" :visible.sync="dialogVisible" width="800px" @close="close">
       <el-form ref="form" :model="form" label-width="80px">
         <el-form-item label="名称">
@@ -104,7 +102,7 @@ export default {
       if (this.form.hasOwnProperty('id')) {
         this.loading = true
         this.axios
-          .put(`${this.url}/notebook/catalog/${this.form.id}/`, this.form)
+          .put(`${this.url}/admin/notebook/catalog/${this.form.id}/`, this.form)
           .then(res => {
             if (res.data.code === 200) {
               this.$message({
@@ -126,7 +124,7 @@ export default {
         this.loading = true
         this.axios
           .post(
-            `${this.url}/notebook/catalog/${this.$route.query.id}/`,
+            `${this.url}/admin/notebook/catalog/${this.$route.query.id}/`,
             this.form
           )
           .then(res => {
@@ -169,7 +167,7 @@ export default {
         .then(() => {
           this.loading = true
           this.axios
-            .delete(`${this.url}/notebook/catalog/${id}/`)
+            .delete(`${this.url}/admin/notebook/catalog/${id}/`)
             .then(res => {
               if (res.data.code === 200) {
                 this.$message({
@@ -220,7 +218,7 @@ export default {
     get_catalogs() {
       this.loading = true
       this.axios
-        .get(`${this.url}/notebook/catalog/${this.$route.query.id}/`)
+        .get(`${this.url}/admin/notebook/catalog/${this.$route.query.id}/`)
         .then(res => {
           if (res.data.code === 200) {
             this.catalogs = this.getJsonTree(res.data.data, null)
@@ -238,7 +236,7 @@ export default {
       this.current = val
       this.loading = true
       this.axios
-        .get(`${this.url}/notebook/content/${val.id}/`)
+        .get(`${this.url}/admin/notebook/content/${val.id}/`)
         .then(res => {
           if (res.data.code === 200) {
             this.content = res.data.data
@@ -258,7 +256,7 @@ export default {
       }
       this.loading = true
       this.axios
-        .put(`${this.url}/notebook/content/${this.content.id}/`, this.content)
+        .put(`${this.url}/admin/notebook/content/${this.content.id}/`, this.content)
         .then(res => {
           if (res.data.code === 200) {
             this.$message({
@@ -279,7 +277,7 @@ export default {
   mounted() {
     if (this.$store.state.jurisdictions.indexOf('狸知云笔记') < 0) {
       this.axios
-        .get(`${this.url}/person/jur/`)
+        .get(`${this.url}/admin/person/jur/`)
         .then(res => {
           if (res.data.code === 200) {
             if (res.data.data.indexOf('狸知云笔记') < 0) {
@@ -351,11 +349,28 @@ export default {
 
   .el-main {
     height: 100%;
+    position: relative;
     .opera {
-      padding: 20px 0;
+      position: absolute;
+      height: 70px;
+      top: 0;
+      left: 15px;
+      right: 15px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      .name {
+        padding: 10px 20px;
+        border-radius: 4px;
+        box-shadow: 0 6px 10px #eee;
+      }
+    }
+    .edit {
+      position: absolute;
+      top: 70px;
+      left: 15px;
+      right: 15px;
+      bottom: 20px;
     }
   }
 }

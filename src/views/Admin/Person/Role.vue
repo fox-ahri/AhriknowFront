@@ -104,7 +104,7 @@ export default {
     handlerManage() {
       this.loading = true
       this.axios
-        .put(`${this.url}/person/role/${this.current.id}/`, {
+        .put(`${this.url}/admin/person/role/${this.current.id}/`, {
           jurisdictions: this.$refs.tree.getCheckedKeys()
         })
         .then(res => {
@@ -142,7 +142,7 @@ export default {
       if (this.form.hasOwnProperty('id')) {
         this.loading = true
         this.axios
-          .put(`${this.url}/person/role/${this.form.id}/`, this.form)
+          .put(`${this.url}/admin/person/role/${this.form.id}/`, this.form)
           .then(res => {
             if (res.data.code === 200) {
               this.$message({
@@ -163,7 +163,7 @@ export default {
       } else {
         this.loading = true
         this.axios
-          .post(`${this.url}/person/role/`, this.form)
+          .post(`${this.url}/admin/person/role/`, this.form)
           .then(res => {
             if (res.data.code === 200) {
               this.$message({
@@ -192,7 +192,7 @@ export default {
         .then(() => {
           this.loading = true
           this.axios
-            .delete(`${this.url}/person/role/${data.id}/`)
+            .delete(`${this.url}/admin/person/role/${data.id}/`)
             .then(res => {
               if (res.data.code === 200) {
                 this.$message({
@@ -227,7 +227,7 @@ export default {
     get_roles() {
       this.loading = true
       this.axios
-        .get(`${this.url}/person/role/`)
+        .get(`${this.url}/admin/person/role/`)
         .then(res => {
           if (res.data.code === 200) {
             this.roles = res.data.data
@@ -244,7 +244,7 @@ export default {
     get_jurisdictions() {
       this.loading = true
       this.axios
-        .get(`${this.url}/person/jurisdiction/`)
+        .get(`${this.url}/admin/person/jurisdiction/`)
         .then(res => {
           if (res.data.code === 200) {
             this.jurisdictions = this.toJsonTree(res.data.data, null)
@@ -262,7 +262,7 @@ export default {
   mounted() {
     if (this.$store.state.jurisdictions.indexOf('角色管理') < 0) {
       this.axios
-        .get(`${this.url}/person/jur/`)
+        .get(`${this.url}/admin/person/jur/`)
         .then(res => {
           if (res.data.code === 200) {
             if (res.data.data.indexOf('角色管理') < 0) {

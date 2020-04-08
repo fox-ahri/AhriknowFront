@@ -178,7 +178,7 @@ export default {
     handlerManage() {
       this.loading = true
       this.axios
-        .put(`${this.url}/person/user/${this.current.id}/`, {
+        .put(`${this.url}/admin/person/user/${this.current.id}/`, {
           jurisdictions: this.$refs.tree.getCheckedKeys()
         })
         .then(res => {
@@ -213,7 +213,7 @@ export default {
         .then(() => {
           this.loading = true
           this.axios
-            .delete(`${this.url}/person/user/${data.id}/`)
+            .delete(`${this.url}/admin/person/user/${data.id}/`)
             .then(res => {
               if (res.data.code === 200) {
                 this.$message({
@@ -242,7 +242,7 @@ export default {
       if (this.form.hasOwnProperty('id')) {
         this.loading = true
         this.axios
-          .put(`${this.url}/person/user/${this.form.id}/`, this.form)
+          .put(`${this.url}/admin/person/user/${this.form.id}/`, this.form)
           .then(res => {
             if (res.data.code === 200) {
               this.$message({
@@ -263,7 +263,7 @@ export default {
       } else {
         this.loading = true
         this.axios
-          .post(`${this.url}/person/user/`, this.form)
+          .post(`${this.url}/admin/person/user/`, this.form)
           .then(res => {
             if (res.data.code === 200) {
               this.$message({
@@ -286,7 +286,7 @@ export default {
     change(data) {
       this.loading = true
       this.axios
-        .put(`${this.url}/person/user/${data.id}/`, {
+        .put(`${this.url}/admin/person/user/${data.id}/`, {
           activated: data.activated
         })
         .then(res => {
@@ -317,7 +317,7 @@ export default {
     get_users() {
       this.loading = true
       this.axios
-        .get(`${this.url}/person/user/`)
+        .get(`${this.url}/admin/person/user/`)
         .then(res => {
           if (res.data.code === 200) {
             this.users = res.data.data
@@ -335,7 +335,7 @@ export default {
     get_departments() {
       this.loading = true
       this.axios
-        .get(`${this.url}/person/department/`)
+        .get(`${this.url}/admin/person/department/`)
         .then(res => {
           if (res.data.code === 200) {
             this.departments = res.data.data
@@ -352,7 +352,7 @@ export default {
     get_role() {
       this.loading = true
       this.axios
-        .get(`${this.url}/person/role/`)
+        .get(`${this.url}/admin/person/role/`)
         .then(res => {
           if (res.data.code === 200) {
             this.roles = res.data.data
@@ -369,7 +369,7 @@ export default {
     get_jurisdictions() {
       this.loading = true
       this.axios
-        .get(`${this.url}/person/jurisdiction/`)
+        .get(`${this.url}/admin/person/jurisdiction/`)
         .then(res => {
           if (res.data.code === 200) {
             res.data.data.forEach(item => {
@@ -389,7 +389,7 @@ export default {
   mounted() {
     if (this.$store.state.jurisdictions.indexOf('用户管理') < 0) {
       this.axios
-        .get(`${this.url}/person/jur/`)
+        .get(`${this.url}/admin/person/jur/`)
         .then(res => {
           if (res.data.code === 200) {
             if (res.data.data.indexOf('用户管理') < 0) {

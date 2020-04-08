@@ -12,6 +12,7 @@
         >
           <el-menu-item index="1">管理中心</el-menu-item>
           <el-menu-item index="2" style="float: right" @click="exit">退出</el-menu-item>
+          <el-menu-item index="3" style="float: right" @click="$router.push('/')">首页</el-menu-item>
         </el-menu>
       </el-header>
       <el-container>
@@ -39,7 +40,7 @@
               <i class="el-icon-warning"></i>
               <span slot="title">我的信息</span>
             </el-menu-item>
-            <el-submenu index="/admin/user" v-if="jurisdictions.indexOf('人员管理') > -1">
+            <el-submenu index="/admin/person" v-if="jurisdictions.indexOf('人员管理') > -1">
               <template slot="title">
                 <i class="el-icon-s-tools"></i>
                 <span>人员管理</span>
@@ -61,6 +62,18 @@
               <i class="el-icon-s-management"></i>
               <span slot="title">狸知云笔记</span>
             </el-menu-item>
+            <el-submenu index="/admin/setting" v-if="jurisdictions.indexOf('系统设置') > -1">
+              <template slot="title">
+                <i class="el-icon-s-tools"></i>
+                <span>系统设置</span>
+              </template>
+              <el-menu-item-group>
+                <el-menu-item
+                  index="/admin/index-show"
+                  v-if="jurisdictions.indexOf('首页展示') > -1"
+                >首页展示</el-menu-item>
+              </el-menu-item-group>
+            </el-submenu>
           </el-menu>
         </el-aside>
         <el-main>
@@ -90,7 +103,7 @@ export default {
     get_jurisdictions() {
       this.loading = true
       this.axios
-        .get(`${this.url}/person/jur/`)
+        .get(`${this.url}/admin/person/jur/`)
         .then(res => {
           if (res.data.code === 200) {
             this.jurisdictions = res.data.data

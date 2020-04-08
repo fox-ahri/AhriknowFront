@@ -89,7 +89,7 @@ export default {
       if (this.form.hasOwnProperty('id')) {
         this.loading = true
         this.axios
-          .put(`${this.url}/notebook/book/${this.form.id}/`, this.form)
+          .put(`${this.url}/admin/notebook/book/${this.form.id}/`, this.form)
           .then(res => {
             if (res.data.code === 200) {
               this.$message({
@@ -110,7 +110,7 @@ export default {
       } else {
         this.loading = true
         this.axios
-          .post(`${this.url}/notebook/book/`, this.form)
+          .post(`${this.url}/admin/notebook/book/`, this.form)
           .then(res => {
             if (res.data.code === 200) {
               this.$message({
@@ -143,7 +143,7 @@ export default {
         .then(() => {
           this.loading = true
           this.axios
-            .delete(`${this.url}/notebook/book/${id}/`)
+            .delete(`${this.url}/admin/notebook/book/${id}/`)
             .then(res => {
               if (res.data.code === 200) {
                 this.$message({
@@ -180,7 +180,7 @@ export default {
     get_books() {
       this.loading = true
       this.axios
-        .get(`${this.url}/notebook/book/`)
+        .get(`${this.url}/admin/notebook/book/`)
         .then(res => {
           if (res.data.code === 200) {
             this.books = res.data.data
@@ -201,7 +201,7 @@ export default {
   mounted() {
     if (this.$store.state.jurisdictions.indexOf('狸知云笔记') < 0) {
       this.axios
-        .get(`${this.url}/person/jur/`)
+        .get(`${this.url}/admin/person/jur/`)
         .then(res => {
           if (res.data.code === 200) {
             if (res.data.data.indexOf('狸知云笔记') < 0) {

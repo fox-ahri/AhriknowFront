@@ -16,15 +16,19 @@ import 'mavon-editor/dist/css/index.css'
 Vue.use(mavonEditor)
 
 Vue.config.productionTip = false
-// Vue.prototype.url = "https://admin.ahriknow.com"
-Vue.prototype.url = 'http://127.0.0.1:8000'
+Vue.prototype.url = "https://admin.ahriknow.com"
+// Vue.prototype.url = 'http://127.0.0.1:8001'
+
+const CancelToken = axios.CancelToken
+const source = CancelToken.source()
 
 axios.interceptors.request.use(
 	request => {
+		request.cancelToken = source.token
 		request.headers['token'] = localStorage.getItem('token')
 		return request
 	},
-	function(error) {
+	error => {
 		return Promise.reject(error)
 	}
 )
@@ -32,19 +36,24 @@ axios.interceptors.request.use(
 axios.interceptors.response.use(
 	response => {
 		if (response.data.code === 0) {
+			source.cancel()
 			localStorage.clear('user')
 			router.push('/auth')
-			return false
+			return Promise.reject({ message: '登录超时' })
 		}
 		return response
 	},
 	error => {
-		return Promise.reject(error)
+		if (axios.isCancel(error)) {
+			return new Promise(() => {})
+		} else {
+			return Promise.reject(error)
+		}
 	}
 )
 
 new Vue({
 	router,
 	store,
-	render: h => h(App)
+	render: h => h(App),
 }).$mount('#app')

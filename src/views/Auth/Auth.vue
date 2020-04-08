@@ -93,11 +93,11 @@ export default {
       }
       this.loading = true
       this.axios
-        .post(`${this.url}/person/auth/`, this.form)
+        .post(`${this.url}/login/`, this.form)
         .then(res => {
           if (res.data.code === 200) {
             this.$store.commit('token', res.data.data.token)
-            this.$router.push({ name: 'admin' })
+            this.$router.push({ name: 'index' })
           } else {
             this.$message.error(res.data.msg)
           }
@@ -127,7 +127,7 @@ export default {
       }
       this.loading = true
       this.axios
-        .post(`${this.url}/person/user/`, this.reg)
+        .post(`${this.url}/signup/`, this.reg)
         .then(res => {
           if (res.data.code === 200) {
             window.location.reload()

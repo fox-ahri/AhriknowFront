@@ -122,7 +122,7 @@ export default {
     handlerManage() {
       this.loading = true
       this.axios
-        .put(`${this.url}/person/department/${this.current.id}/`, {
+        .put(`${this.url}/admin/person/department/${this.current.id}/`, {
           jurisdictions: this.$refs.tree.getCheckedKeys()
         })
         .then(res => {
@@ -187,7 +187,7 @@ export default {
       if (this.form.hasOwnProperty('id')) {
         this.loading = true
         this.axios
-          .put(`${this.url}/person/department/${this.form.id}/`, this.form)
+          .put(`${this.url}/admin/person/department/${this.form.id}/`, this.form)
           .then(res => {
             if (res.data.code === 200) {
               this.$message({
@@ -208,7 +208,7 @@ export default {
       } else {
         this.loading = true
         this.axios
-          .post(`${this.url}/person/department/`, this.form)
+          .post(`${this.url}/admin/person/department/`, this.form)
           .then(res => {
             if (res.data.code === 200) {
               this.$message({
@@ -237,7 +237,7 @@ export default {
         .then(() => {
           this.loading = true
           this.axios
-            .delete(`${this.url}/person/department/${data.id}/`)
+            .delete(`${this.url}/admin/person/department/${data.id}/`)
             .then(res => {
               if (res.data.code === 200) {
                 this.$message({
@@ -272,7 +272,7 @@ export default {
     get_departments() {
       this.loading = true
       this.axios
-        .get(`${this.url}/person/department/`)
+        .get(`${this.url}/admin/person/department/`)
         .then(res => {
           if (res.data.code === 200) {
             this.departments = this.getJsonTree(res.data.data, null)
@@ -289,7 +289,7 @@ export default {
     get_jurisdictions() {
       this.loading = true
       this.axios
-        .get(`${this.url}/person/jurisdiction/`)
+        .get(`${this.url}/admin/person/jurisdiction/`)
         .then(res => {
           if (res.data.code === 200) {
             this.jurisdictions = this.toJsonTree(res.data.data, null)
@@ -307,7 +307,7 @@ export default {
   mounted() {
     if (this.$store.state.jurisdictions.indexOf('部门管理') < 0) {
       this.axios
-        .get(`${this.url}/person/jur/`)
+        .get(`${this.url}/admin/person/jur/`)
         .then(res => {
           if (res.data.code === 200) {
             if (res.data.data.indexOf('部门管理') < 0) {
