@@ -1,8 +1,9 @@
 <template>
   <div id="index" class="index">
     <nav>
-      <span class="logo">AHRIKNOW</span>
-      <router-link to="/admin">控制台</router-link>
+      <span class="logo" @click="$router.push('/')">AHRIKNOW</span>
+      <router-link to="/book">Notebook</router-link>
+      <router-link class="console" to="/admin">控制台</router-link>
     </nav>
     <section>
       <router-view />
@@ -41,16 +42,19 @@ export default {
     a {
       color: #fff9;
       text-decoration: none;
-      float: right;
       transition: 0.3s;
+      margin: 0 16px;
       &:hover {
         color: #fffc;
       }
     }
+    .console {
+      float: right;
+    }
   }
   section {
     height: 100%;
-    padding-top: 70px;
+    padding-top: 60px;
     overflow: auto;
   }
 }

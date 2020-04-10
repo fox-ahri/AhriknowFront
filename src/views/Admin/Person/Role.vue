@@ -260,24 +260,6 @@ export default {
     }
   },
   mounted() {
-    if (this.$store.state.jurisdictions.indexOf('角色管理') < 0) {
-      this.axios
-        .get(`${this.url}/admin/person/jur/`)
-        .then(res => {
-          if (res.data.code === 200) {
-            if (res.data.data.indexOf('角色管理') < 0) {
-              this.$router.push('/admin')
-              return
-            }
-            this.$store.commit('jurisdictions', res.data.data)
-          } else {
-            console.log(res.data.msg)
-          }
-        })
-        .catch(err => {
-          this.$message.error(err.message)
-        })
-    }
     this.get_roles()
     this.get_jurisdictions()
   }

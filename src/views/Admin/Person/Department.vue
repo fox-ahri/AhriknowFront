@@ -305,24 +305,6 @@ export default {
     }
   },
   mounted() {
-    if (this.$store.state.jurisdictions.indexOf('部门管理') < 0) {
-      this.axios
-        .get(`${this.url}/admin/person/jur/`)
-        .then(res => {
-          if (res.data.code === 200) {
-            if (res.data.data.indexOf('部门管理') < 0) {
-              this.$router.push('/admin')
-              return
-            }
-            this.$store.commit('jurisdictions', res.data.data)
-          } else {
-            console.log(res.data.msg)
-          }
-        })
-        .catch(err => {
-          this.$message.error(err.message)
-        })
-    }
     this.get_departments()
     this.get_jurisdictions()
   },

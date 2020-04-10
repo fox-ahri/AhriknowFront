@@ -58,10 +58,16 @@
                 <el-menu-item index="/admin/user" v-if="jurisdictions.indexOf('用户管理') > -1">用户管理</el-menu-item>
               </el-menu-item-group>
             </el-submenu>
-            <el-menu-item index="/admin/book" v-if="jurisdictions.indexOf('狸知云笔记') > -1">
-              <i class="el-icon-s-management"></i>
-              <span slot="title">狸知云笔记</span>
-            </el-menu-item>
+            <el-submenu index="/admin/notebook" v-if="jurisdictions.indexOf('狸知云笔记') > -1">
+              <template slot="title">
+                <i class="el-icon-s-management"></i>
+                <span>狸知云笔记</span>
+              </template>
+              <el-menu-item-group>
+                <el-menu-item index="/admin/book" v-if="jurisdictions.indexOf('笔记') > -1">笔记</el-menu-item>
+                <el-menu-item index="/admin/tag" v-if="jurisdictions.indexOf('标签') > -1">标签</el-menu-item>
+              </el-menu-item-group>
+            </el-submenu>
             <el-submenu index="/admin/setting" v-if="jurisdictions.indexOf('系统设置') > -1">
               <template slot="title">
                 <i class="el-icon-s-tools"></i>

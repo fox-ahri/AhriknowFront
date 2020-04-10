@@ -59,6 +59,16 @@
         <el-form-item label="描述">
           <el-input type="textarea" v-model="form.describe"></el-input>
         </el-form-item>
+        <el-form-item label="标签">
+          <el-select v-model="form.tags" multiple placeholder="请选择">
+            <el-option
+              v-for="i in tags"
+              :key="i.id"
+              :label="i.name"
+              :value="i.id"
+            ></el-option>
+          </el-select>
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
@@ -77,10 +87,12 @@ export default {
         name: '',
         describe: '',
         image: '',
+        tags: [],
         public: false
       },
       dialogVisible: false,
       books: [],
+      tags: [],
       loading: false
     }
   },
@@ -91,6 +103,7 @@ export default {
         this.axios
           .put(`${this.url}/admin/notebook/book/${this.form.id}/`, this.form)
           .then(res => {
+            this.loading = false
             if (res.data.code === 200) {
               this.$message({
                 message: '更新成功',
@@ -101,7 +114,6 @@ export default {
             } else {
               this.$message.error(res.data.msg)
             }
-            this.loading = false
           })
           .catch(err => {
             this.$message.error(err.message)
@@ -112,6 +124,7 @@ export default {
         this.axios
           .post(`${this.url}/admin/notebook/book/`, this.form)
           .then(res => {
+            this.loading = false
             if (res.data.code === 200) {
               this.$message({
                 message: '添加成功',
@@ -122,7 +135,6 @@ export default {
             } else {
               this.$message.error(res.data.msg)
             }
-            this.loading = false
           })
           .catch(err => {
             this.$message.error(err.message)
@@ -145,6 +157,7 @@ export default {
           this.axios
             .delete(`${this.url}/admin/notebook/book/${id}/`)
             .then(res => {
+              this.loading = false
               if (res.data.code === 200) {
                 this.$message({
                   message: '删除成功',
@@ -154,7 +167,6 @@ export default {
               } else {
                 this.$message.error(res.data.msg)
               }
-              this.loading = false
             })
             .catch(err => {
               this.$message.error(err.message)
@@ -173,6 +185,7 @@ export default {
         name: '',
         describe: '',
         image: '',
+        tags: [],
         public: false
       }
       this.dialogVisible = false
@@ -182,8 +195,25 @@ export default {
       this.axios
         .get(`${this.url}/admin/notebook/book/`)
         .then(res => {
+          this.loading = false
           if (res.data.code === 200) {
             this.books = res.data.data
+          } else {
+            this.$message.error(res.data.msg)
+          }
+        })
+        .catch(err => {
+          this.$message.error(err.message)
+          this.loading = false
+        })
+    },
+    get_tags() {
+      this.loading = true
+      this.axios
+        .get(`${this.url}/admin/notebook/tag/`)
+        .then(res => {
+          if (res.data.code === 200) {
+            this.tags = res.data.data
           } else {
             this.$message.error(res.data.msg)
           }
@@ -199,25 +229,8 @@ export default {
     }
   },
   mounted() {
-    if (this.$store.state.jurisdictions.indexOf('狸知云笔记') < 0) {
-      this.axios
-        .get(`${this.url}/admin/person/jur/`)
-        .then(res => {
-          if (res.data.code === 200) {
-            if (res.data.data.indexOf('狸知云笔记') < 0) {
-              this.$router.push('/admin')
-              return
-            }
-            this.$store.commit('jurisdictions', res.data.data)
-          } else {
-            console.log(res.data.msg)
-          }
-        })
-        .catch(err => {
-          this.$message.error(err.message)
-        })
-    }
     this.get_books()
+    this.get_tags()
   }
 }
 </script>
@@ -230,6 +243,7 @@ export default {
   .container {
     display: flex;
     justify-content: flex-start;
+    flex-wrap: wrap;
     .el-card {
       position: relative;
       margin: 16px;
