@@ -17,8 +17,8 @@ Vue.use(mavonEditor)
 
 Vue.config.productionTip = false
 
-// Vue.prototype.url = "https://admin.ahriknow.com"
-Vue.prototype.url = 'http://127.0.0.1:8001'
+Vue.prototype.url = "https://admin.ahriknow.com"
+// Vue.prototype.url = 'http://127.0.0.1:8001'
 
 const CancelToken = axios.CancelToken
 const source = CancelToken.source()
