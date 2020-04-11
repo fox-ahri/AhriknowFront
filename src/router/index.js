@@ -9,7 +9,7 @@ const routes = [
 	{
 		path: '/auth',
 		name: 'auth',
-		component: () => import('../views/Auth/Auth.vue'),
+		component: () => import('../views/Auth/Auth.vue')
 	},
 	{
 		path: '/index',
@@ -21,19 +21,19 @@ const routes = [
 			{
 				path: 'home',
 				name: 'home',
-				component: Home,
+				component: Home
 			},
 			{
 				path: 'book',
 				name: 'index-book',
-				component: () => import('../views/Index/Notebook/Book.vue'),
+				component: () => import('../views/Index/Notebook/Book.vue')
 			},
 			{
 				path: 'read',
 				name: 'index-read',
-				component: () => import('../views/Index/Notebook/Read.vue'),
-			},
-		],
+				component: () => import('../views/Index/Notebook/Read.vue')
+			}
+		]
 	},
 	{
 		path: '/admin',
@@ -44,44 +44,44 @@ const routes = [
 			{
 				path: 'welcome',
 				name: 'welcome',
-				component: () => import('../views/Admin/Welcome.vue'),
+				component: () => import('../views/Admin/Welcome.vue')
 			},
 			{
 				path: 'userinfo',
 				name: 'userinfo',
-				component: () => import('../views/Admin/Person/Userinfo.vue'),
+				component: () => import('../views/Admin/Person/Userinfo.vue')
 			},
 			{
 				path: 'department',
 				name: 'department',
 				component: () => import('../views/Admin/Person/Department.vue'),
 				meta: {
-					jur: '部门管理',
-				},
+					jur: '部门管理'
+				}
 			},
 			{
 				path: 'role',
 				name: 'role',
 				component: () => import('../views/Admin/Person/Role.vue'),
 				meta: {
-					jur: '角色管理',
-				},
+					jur: '角色管理'
+				}
 			},
 			{
 				path: 'jurisdiction',
 				name: 'jurisdiction',
 				component: () => import('../views/Admin/Person/Jurisdiction.vue'),
 				meta: {
-					jur: '权限管理',
-				},
+					jur: '权限管理'
+				}
 			},
 			{
 				path: 'user',
 				name: 'user',
 				component: () => import('../views/Admin/Person/User.vue'),
 				meta: {
-					jur: '用户管理',
-				},
+					jur: '用户管理'
+				}
 			},
 			/* ---------------------------------- Notebook ---------------------------------- */
 			{
@@ -89,41 +89,56 @@ const routes = [
 				name: 'book',
 				component: () => import('../views/Admin/Notebook/Book.vue'),
 				meta: {
-					jur: '笔记',
-				},
+					jur: '笔记'
+				}
 			},
 			{
 				path: 'tag',
 				name: 'tag',
 				component: () => import('../views/Admin/Notebook/Tag.vue'),
 				meta: {
-					jur: '标签',
-				},
+					jur: '标签'
+				}
 			},
-			,
 			/* ---------------------------------- Setting ---------------------------------- */
 			{
 				path: 'index-show',
 				name: 'index-show',
 				component: () => import('../views/Admin/Setting/IndexShow.vue'),
 				meta: {
-					jur: '首页展示',
-				},
+					jur: '首页展示'
+				}
 			},
-		],
+			/* ---------------------------------- Setting ---------------------------------- */
+			{
+				path: 'restapi-project',
+				name: 'restapi-project',
+				component: () => import('../views/Admin/Restapi/Project.vue'),
+			},
+			{
+				path: 'restapi-url',
+				name: 'restapi-url',
+				component: () => import('../views/Admin/Restapi/Url.vue'),
+			},
+			{
+				path: 'restapi-opera',
+				name: 'restapi-opera',
+				component: () => import('../views/Admin/Restapi/Opera.vue'),
+			}
+		]
 	},
 	{
 		path: '/admin/edit',
 		name: 'edit',
 		component: () => import('../views/Admin/Notebook/Edit.vue'),
 		meta: {
-			jur: '笔记',
-		},
-	},
+			jur: '笔记'
+		}
+	}
 ]
 
 const router = new VueRouter({
-	routes,
+	routes
 })
 
 import store from '../store/index'
@@ -139,7 +154,6 @@ router.beforeEach((to, from, next) => {
 		next()
 	}
 })
-
 
 // this.axios
 // .get(`${this.url}/admin/person/jur/`)

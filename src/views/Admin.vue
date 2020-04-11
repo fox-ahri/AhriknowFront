@@ -40,6 +40,25 @@
               <i class="el-icon-warning"></i>
               <span slot="title">我的信息</span>
             </el-menu-item>
+            <el-submenu index="/admin/notebook" v-if="jurisdictions.indexOf('狸知云笔记') > -1">
+              <template slot="title">
+                <i class="el-icon-s-management"></i>
+                <span>狸知云笔记</span>
+              </template>
+              <el-menu-item-group>
+                <el-menu-item index="/admin/book" v-if="jurisdictions.indexOf('笔记') > -1">笔记</el-menu-item>
+                <el-menu-item index="/admin/tag" v-if="jurisdictions.indexOf('标签') > -1">标签</el-menu-item>
+              </el-menu-item-group>
+            </el-submenu>
+            <el-submenu index="/admin/restapi">
+              <template slot="title">
+                <i class="el-icon-s-management"></i>
+                <span>Restful 接口</span>
+              </template>
+              <el-menu-item-group>
+                <el-menu-item index="/admin/restapi-project">项目管理</el-menu-item>
+              </el-menu-item-group>
+            </el-submenu>
             <el-submenu index="/admin/person" v-if="jurisdictions.indexOf('人员管理') > -1">
               <template slot="title">
                 <i class="el-icon-s-tools"></i>
@@ -56,16 +75,6 @@
                   v-if="jurisdictions.indexOf('权限管理') > -1"
                 >权限管理</el-menu-item>
                 <el-menu-item index="/admin/user" v-if="jurisdictions.indexOf('用户管理') > -1">用户管理</el-menu-item>
-              </el-menu-item-group>
-            </el-submenu>
-            <el-submenu index="/admin/notebook" v-if="jurisdictions.indexOf('狸知云笔记') > -1">
-              <template slot="title">
-                <i class="el-icon-s-management"></i>
-                <span>狸知云笔记</span>
-              </template>
-              <el-menu-item-group>
-                <el-menu-item index="/admin/book" v-if="jurisdictions.indexOf('笔记') > -1">笔记</el-menu-item>
-                <el-menu-item index="/admin/tag" v-if="jurisdictions.indexOf('标签') > -1">标签</el-menu-item>
               </el-menu-item-group>
             </el-submenu>
             <el-submenu index="/admin/setting" v-if="jurisdictions.indexOf('系统设置') > -1">
