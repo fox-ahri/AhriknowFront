@@ -1,5 +1,12 @@
 <template>
-  <div id="opera" class="opera">
+  <div
+    id="opera"
+    class="opera"
+    v-loading="loading"
+    element-loading-text="拼命加载中"
+    element-loading-spinner="el-icon-loading"
+    element-loading-background="rgba(0, 0, 0, 0.8)"
+  >
     <div class="title">
       <h2>路由操作</h2>
     </div>
@@ -10,6 +17,7 @@
           <div class="item" v-for="j in i.vars" :key="j.id">
             <el-button @click="i.vars.pop(j)">删除</el-button>
             <el-select v-model="j.type" placeholder="变量类型">
+              <el-option label="Header" value="header"></el-option>
               <el-option label="Request" value="request"></el-option>
               <el-option label="String" value="string"></el-option>
               <el-option label="Int" value="int"></el-option>
@@ -43,6 +51,9 @@
               <el-option label="Array" value="array"></el-option>
               <el-option label="Json" value="json"></el-option>
             </el-select>
+            <el-select v-model="i.db" placeholder="选择数据库">
+              <el-option v-for="db in dbs.filter(d => d.type == 'mysql')" :key="db.id" :label="db.dbname" :value="db"></el-option>
+            </el-select>
             <el-input v-model="i.var" placeholder="请输入变量名" v-show="i.data_type != 'null'"></el-input>
             <br />
           </div>
@@ -55,6 +66,9 @@
         </div>
         <div class="mongo" v-else-if="i.type == 'mongo'">
           <div class="opera">
+            <el-select v-model="i.db" placeholder="选择数据库">
+              <el-option v-for="db in dbs.filter(d => d.type == 'mongo')" :key="db.id" :label="db.dbname" :value="db"></el-option>
+            </el-select>
             <el-select v-model="i.data_type" placeholder="变量类型">
               <el-option label="空" value="null"></el-option>
               <el-option label="Array" value="array"></el-option>
@@ -114,9 +128,12 @@ export default {
       newOperaType: 'var',
       operaList: [],
       ret: {
-        type: 'json',
-        data: '{"code": 200, "msg": ${key3}, "data": ${data}}'
-      }
+        type: 'string',
+        data: ''
+      },
+      loading: false,
+      opera: {},
+      dbs: []
     }
   },
   methods: {
@@ -151,6 +168,7 @@ export default {
         case 'mysql':
           this.operaList.push({
             id: new Date().getTime(),
+            db: {},
             type: 'mysql',
             sql: 'SELECT * FROM table_name',
             data_type: 'null',
@@ -160,6 +178,7 @@ export default {
         case 'mongo':
           this.operaList.push({
             id: new Date().getTime(),
+            db: {},
             type: 'mongo',
             sql: 'db.collection_name.findAll()',
             data_type: 'null',
@@ -168,7 +187,73 @@ export default {
           break
       }
     },
-    handlerSave() {}
+    handlerSave() {
+      this.opera.opera_list = this.operaList
+      this.opera.return = this.ret
+      this.loading = true
+      this.axios
+        .put(
+          `${this.url}/admin/restapi/opera/${this.$route.query.id}/`,
+          this.opera
+        )
+        .then(res => {
+          if (res.data.code === 200) {
+            this.$message({
+              message: '更新成功',
+              type: 'success'
+            })
+            this.$router.go(-1)
+            this.dialogVisible = false
+          } else {
+            this.$message.error(res.data.msg)
+          }
+          this.loading = false
+        })
+        .catch(err => {
+          this.$message.error(err.message)
+          this.loading = false
+        })
+    },
+    get_opera(id) {
+      this.loading = true
+      this.axios
+        .get(`${this.url}/admin/restapi/opera/${id}/`)
+        .then(res => {
+          this.loading = false
+          if (res.data.code === 200) {
+            this.opera = res.data.data
+            this.operaList = res.data.data.opera_list
+            this.ret = res.data.data.return
+          } else {
+            this.$message.error(res.data.msg)
+          }
+        })
+        .catch(err => {
+          this.$message.error(err.message)
+          this.loading = false
+        })
+    },
+    get_dbs() {
+      this.loading = true
+      this.axios
+        .get(`${this.url}/admin/database/db/`)
+        .then(res => {
+          this.loading = false
+          if (res.data.code === 200) {
+            this.dbs = res.data.data
+          } else {
+            this.$message.error(res.data.msg)
+          }
+        })
+        .catch(err => {
+          this.$message.error(err.message)
+          this.loading = false
+        })
+    }
+  },
+  mounted() {
+    this.get_dbs()
+    this.get_opera(this.$route.query.id)
   }
 }
 </script>
@@ -208,7 +293,7 @@ export default {
         display: flex;
         .el-select,
         .el-input {
-          width: 140px;
+          width: 180px;
         }
       }
     }

@@ -109,21 +109,39 @@ const routes = [
 					jur: '首页展示'
 				}
 			},
-			/* ---------------------------------- Setting ---------------------------------- */
+			/* ---------------------------------- Rest Api ---------------------------------- */
 			{
 				path: 'restapi-project',
 				name: 'restapi-project',
 				component: () => import('../views/Admin/Restapi/Project.vue'),
+				meta: {
+					jur: '接口管理'
+				}
 			},
 			{
 				path: 'restapi-url',
 				name: 'restapi-url',
 				component: () => import('../views/Admin/Restapi/Url.vue'),
+				meta: {
+					jur: '接口管理'
+				}
 			},
 			{
 				path: 'restapi-opera',
 				name: 'restapi-opera',
 				component: () => import('../views/Admin/Restapi/Opera.vue'),
+				meta: {
+					jur: '接口管理'
+				}
+			},
+			/* ---------------------------------- Database ---------------------------------- */
+			{
+				path: 'database-db',
+				name: 'database-db',
+				component: () => import('../views/Admin/Database/Db.vue'),
+				meta: {
+					jur: '数据库'
+				}
 			}
 		]
 	},
@@ -142,13 +160,32 @@ const router = new VueRouter({
 })
 
 import store from '../store/index'
+import axios from 'axios'
 
 router.beforeEach((to, from, next) => {
 	if (to.hasOwnProperty('meta') && to.meta.hasOwnProperty('jur')) {
 		if (store.state.jurisdictions.indexOf(to.meta.jur) > -1) {
 			next()
 		} else {
-			next('/admin/welcome')
+			axios
+				.get(`https://admin.ahriknow.com/admin/person/jur/`)
+				.then(res => {
+					if (res.data.code === 200) {
+						if (res.data.data.indexOf(to.meta.jur) > -1) {
+							next()
+							store.commit('jurisdictions', res.data.data)
+						} else {
+							next('/admin/welcome')
+						}
+					} else {
+						console.log(res.data.msg)
+						next('/admin/welcome')
+					}
+				})
+				.catch(err => {
+					console.log(err.message)
+					next('/admin/welcome')
+				})
 		}
 	} else {
 		next()

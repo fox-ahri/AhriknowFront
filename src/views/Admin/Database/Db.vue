@@ -1,52 +1,52 @@
 <template>
   <div
-    id="url"
-    class="url"
+    id="db"
+    class="db"
     v-loading="loading"
     element-loading-text="拼命加载中"
     element-loading-spinner="el-icon-loading"
     element-loading-background="rgba(0, 0, 0, 0.8)"
   >
     <div class="title">
-      <h2>URL</h2>
+      <h2>数据库</h2>
       <el-button @click="dialogVisible = true">新 建</el-button>
     </div>
     <el-divider></el-divider>
     <el-table
-      :data="urls.filter(data => !search || data.path.toLowerCase().includes(search.toLowerCase()))"
+      :data="dbs.filter(data => !search || data.dbname.toLowerCase().includes(search.toLowerCase()))"
       style="width: 100%"
       border
     >
-      <el-table-column label="Url" prop="path"></el-table-column>
-      <el-table-column label="Method" prop="method"></el-table-column>
-      <el-table-column label="Describe" prop="describe"></el-table-column>
+      <el-table-column label="Type">
+        <template slot-scope="scope">
+          <el-tag :type="scope.row.type == 'mysql'?'primary':'success'">{{scope.row.type}}</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column label="DB name" prop="dbname"></el-table-column>
+      <el-table-column label="Username" prop="username"></el-table-column>
+      <el-table-column label="Password">
+        <template slot-scope="scope">{{scope.row.password}}</template>
+      </el-table-column>
       <el-table-column align="right">
         <template slot="header" slot-scope="scope">
           <el-input v-model="search" size="mini" placeholder="输入关键字搜索" />
         </template>
         <template slot-scope="scope">
           <!-- <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">Edit</el-button> -->
-          <el-button size="mini" type="success" @click="handleManage(scope.row)">Manage</el-button>
           <el-button size="mini" type="danger" @click="handleDelete(scope.row)">Delete</el-button>
         </template>
       </el-table-column>
     </el-table>
-    <el-dialog title="新建项目" :visible.sync="dialogVisible" width="800px" @close="close">
+    <el-dialog title="新建数据库" :visible.sync="dialogVisible" width="800px" @close="close">
       <el-form ref="form" :model="form" label-width="80px">
-        <el-form-item label="Url">
-          <el-input v-model="form.url"></el-input>
+        <el-form-item label="密码">
+          <el-input v-model="form.password"></el-input>
         </el-form-item>
-        <el-form-item label="Method">
-          <el-select v-model="form.method" placeholder="请选择请求类型">
-            <el-option label="GET" value="GET"></el-option>
-            <el-option label="POST" value="POST"></el-option>
-            <el-option label="PUT" value="PUT"></el-option>
-            <el-option label="PATCH" value="PATCH"></el-option>
-            <el-option label="DELETE" value="DELETE"></el-option>
+        <el-form-item label="类型">
+          <el-select v-model="form.type" placeholder="请选择数据库类型">
+            <el-option label="Mysql" value="mysql"></el-option>
+            <el-option label="Mongo" value="mongo"></el-option>
           </el-select>
-        </el-form-item>
-        <el-form-item label="描 述">
-          <el-input type="textarea" show-word-limit maxlength="200" v-model="form.describe"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -59,15 +59,14 @@
 
 <script>
 export default {
-  name: 'url',
+  name: 'db',
   data() {
     return {
-      urls: [],
+      dbs: [],
       search: '',
       loading: false,
       dialogVisible: false,
-      form: {},
-      project: ''
+      form: {}
     }
   },
   methods: {
@@ -75,14 +74,10 @@ export default {
       this.form = {}
       this.dialogVisible = false
     },
-    handleManage(val) {
-      this.$router.push({ name: 'restapi-opera', query: { id: val.url_id } })
-    },
     handlerAdd() {
-      this.form.project = this.project
       this.loading = true
       this.axios
-        .post(`${this.url}/admin/restapi/url/`, this.form)
+        .post(`${this.url}/admin/database/db/`, this.form)
         .then(res => {
           this.loading = false
           if (res.data.code === 200) {
@@ -90,7 +85,7 @@ export default {
               message: '添加成功',
               type: 'success'
             })
-            this.get_urls()
+            this.get_dbs()
             this.dialogVisible = false
           } else {
             this.$message.error(res.data.msg)
@@ -102,7 +97,7 @@ export default {
         })
     },
     handleDelete(val) {
-      this.$confirm('此操作将永久删除该 url, 是否继续?', '提示', {
+      this.$confirm('此操作将永久删除该数据库, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -110,7 +105,7 @@ export default {
         .then(() => {
           this.loading = true
           this.axios
-            .delete(`${this.url}/admin/restapi/url/${val.id}/`)
+            .delete(`${this.url}/admin/database/db/${val.id}/`)
             .then(res => {
               this.loading = false
               if (res.data.code === 200) {
@@ -118,7 +113,7 @@ export default {
                   message: '删除成功',
                   type: 'success'
                 })
-                this.get_urls()
+                this.get_dbs()
               } else {
                 this.$message.error(res.data.msg)
               }
@@ -135,14 +130,14 @@ export default {
           })
         })
     },
-    get_urls() {
+    get_dbs() {
       this.loading = true
       this.axios
-        .get(`${this.url}/admin/restapi/url/`)
+        .get(`${this.url}/admin/database/db/`)
         .then(res => {
           this.loading = false
           if (res.data.code === 200) {
-            this.urls = res.data.data
+            this.dbs = res.data.data
           } else {
             this.$message.error(res.data.msg)
           }
@@ -154,14 +149,13 @@ export default {
     }
   },
   mounted() {
-    this.project = this.$route.query.id
-    this.get_urls()
+    this.get_dbs()
   }
 }
 </script>
 
 <style lang="scss" scoped>
-#url {
+#db {
   width: 100%;
   height: 100%;
   padding: 40px;

@@ -50,6 +50,15 @@
                 <el-menu-item index="/admin/tag" v-if="jurisdictions.indexOf('标签') > -1">标签</el-menu-item>
               </el-menu-item-group>
             </el-submenu>
+            <el-submenu index="/admin/database">
+              <template slot="title">
+                <i class="el-icon-s-management"></i>
+                <span>数据库管理</span>
+              </template>
+              <el-menu-item-group>
+                <el-menu-item index="/admin/database-db">Database</el-menu-item>
+              </el-menu-item-group>
+            </el-submenu>
             <el-submenu index="/admin/restapi">
               <template slot="title">
                 <i class="el-icon-s-management"></i>
