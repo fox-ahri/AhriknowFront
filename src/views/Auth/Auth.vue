@@ -78,6 +78,11 @@ export default {
       loading: false
     }
   },
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      localStorage.setItem('from', from.path)
+    })
+  },
   methods: {
     change(val) {
       this.opera = val
@@ -97,7 +102,7 @@ export default {
         .then(res => {
           if (res.data.code === 200) {
             this.$store.commit('token', res.data.data.token)
-            this.$router.push({ name: 'index' })
+            this.$router.push(localStorage.getItem('from') || '/')
           } else {
             this.$message.error(res.data.msg)
           }

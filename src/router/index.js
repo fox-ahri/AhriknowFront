@@ -39,6 +39,9 @@ const routes = [
 		path: '/admin',
 		name: 'admin',
 		component: () => import('../views/Admin.vue'),
+		meta: {
+			login: true
+		},
 		redirect: '/admin/welcome',
 		children: [
 			{
@@ -163,6 +166,11 @@ import store from '../store/index'
 import axios from 'axios'
 
 router.beforeEach((to, from, next) => {
+	if (to.hasOwnProperty('meta') && to.meta.hasOwnProperty('login') && to.meta.login) {
+		if (!localStorage.get('token')) {
+			next('/auth')
+		}
+	}
 	if (to.hasOwnProperty('meta') && to.meta.hasOwnProperty('jur')) {
 		if (store.state.jurisdictions.indexOf(to.meta.jur) > -1) {
 			next()

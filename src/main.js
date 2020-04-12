@@ -25,7 +25,12 @@ const source = CancelToken.source()
 
 axios.interceptors.request.use(
 	request => {
-		request.cancelToken = source.token
+		request.cancelToken = new CancelToken(cancel => {
+			store.state['axiosPromiseCancel'].push({
+				u: request.url + '&' + request.method,
+				f: cancel
+			})
+		})
 		request.headers['token'] = localStorage.getItem('token')
 		return request
 	},
@@ -37,9 +42,15 @@ axios.interceptors.request.use(
 axios.interceptors.response.use(
 	response => {
 		if (response.data.code === 0) {
-			source.cancel()
-			localStorage.clear('user')
-			window.location.replace('/#/auth')
+			// source.cancel()
+			if (store.state['axiosPromiseCancel'].length > 0) {
+				store.state['axiosPromiseCancel'].forEach(e => {
+					e && e.f()
+				})
+			}
+			store.state['axiosPromiseCancel'] = []
+			localStorage.clear()
+			router.push('/auth')
 			return Promise.reject({ message: '登录超时' })
 		}
 		return response
@@ -56,5 +67,5 @@ axios.interceptors.response.use(
 new Vue({
 	router,
 	store,
-	render: h => h(App),
+	render: h => h(App)
 }).$mount('#app')

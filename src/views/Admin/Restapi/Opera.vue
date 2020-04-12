@@ -15,8 +15,9 @@
       <el-card v-for="i in operaList" :key="i.id">
         <div class="var" v-if="i.type == 'var'">
           <div class="item" v-for="j in i.vars" :key="j.id">
-            <el-button @click="i.vars.pop(j)">删除</el-button>
+            <el-button @click="i.vars = i.vars.filter(v => v.id != j.id)">删除</el-button>
             <el-select v-model="j.type" placeholder="变量类型">
+              <el-option label="Function" value="function"></el-option>
               <el-option label="Header" value="header"></el-option>
               <el-option label="Request" value="request"></el-option>
               <el-option label="String" value="string"></el-option>
@@ -25,9 +26,18 @@
               <el-option label="Array" value="array"></el-option>
               <el-option label="Json" value="json"></el-option>
             </el-select>
+            <el-select v-model="j.value" placeholder="选择函数" v-show="j.type == 'function'">
+              <el-option label="Time" value="time"></el-option>
+              <el-option label="UUID" value="uuid"></el-option>
+              <el-option label="Short UUID" value="suuid"></el-option>
+            </el-select>
             <el-input v-model="j.key" placeholder="请输入变量名"></el-input>
-            <el-input v-model="j.value" placeholder="请输入变量值"></el-input>
-            <el-select v-model="j.default_type" placeholder="变量默认类型" v-show="j.type == 'request'">
+            <el-input v-model="j.value" placeholder="请输入变量值" v-show="j.type != 'function'"></el-input>
+            <el-select
+              v-model="j.default_type"
+              placeholder="变量默认类型"
+              v-show="j.type == 'request' || j.type == 'header'"
+            >
               <el-option label="报错" value="error"></el-option>
               <el-option label="空" value="null"></el-option>
               <el-option label="String" value="string"></el-option>
@@ -39,20 +49,25 @@
             <el-input
               v-model="j.default"
               placeholder="变量默认值"
-              v-show="j.type == 'request' && j.default_type != 'error' && j.default_type != 'null'"
+              v-show="(j.type == 'request' || j.type == 'header') && j.default_type != 'error' && j.default_type != 'null'"
             ></el-input>
           </div>
-          <el-button @click="i.vars.push(get_new_var)">添加</el-button>
+          <el-button @click="i.vars.push(get_new_var())">添加</el-button>
         </div>
         <div class="mysql" v-else-if="i.type == 'mysql'">
           <div class="opera">
+            <el-select v-model="i.db" placeholder="选择数据库">
+              <el-option
+                v-for="db in dbs.filter(d => d.type == 'mysql')"
+                :key="db.id"
+                :label="db.dbname"
+                :value="db.id"
+              ></el-option>
+            </el-select>
             <el-select v-model="i.data_type" placeholder="变量类型">
               <el-option label="空" value="null"></el-option>
               <el-option label="Array" value="array"></el-option>
               <el-option label="Json" value="json"></el-option>
-            </el-select>
-            <el-select v-model="i.db" placeholder="选择数据库">
-              <el-option v-for="db in dbs.filter(d => d.type == 'mysql')" :key="db.id" :label="db.dbname" :value="db"></el-option>
             </el-select>
             <el-input v-model="i.var" placeholder="请输入变量名" v-show="i.data_type != 'null'"></el-input>
             <br />
@@ -67,7 +82,22 @@
         <div class="mongo" v-else-if="i.type == 'mongo'">
           <div class="opera">
             <el-select v-model="i.db" placeholder="选择数据库">
-              <el-option v-for="db in dbs.filter(d => d.type == 'mongo')" :key="db.id" :label="db.dbname" :value="db"></el-option>
+              <el-option
+                v-for="db in dbs.filter(d => d.type == 'mongo')"
+                :key="db.id"
+                :label="db.dbname"
+                :value="db.id"
+              ></el-option>
+            </el-select>
+            <el-input v-model="i.collection" placeholder="请输入集合名"></el-input>
+            <el-select v-model="i.function" placeholder="选择操作方法">
+              <el-option label="find" value="find"></el-option>
+              <el-option label="findOne" value="find_one"></el-option>
+              <el-option label="insert" value="insert"></el-option>
+              <el-option label="insertOne" value="insert_one"></el-option>
+              <el-option label="insertMant" value="insert_many"></el-option>
+              <el-option label="remove" value="remove"></el-option>
+              <el-option label="update" value="update"></el-option>
             </el-select>
             <el-select v-model="i.data_type" placeholder="变量类型">
               <el-option label="空" value="null"></el-option>
@@ -87,7 +117,7 @@
         <el-button
           class="delete"
           type="danger"
-          @click="operaList.pop(i)"
+          @click="operaList = operaList.filter(opera => opera.id != i.id)"
           plain
           icon="el-icon-close"
         ></el-button>
@@ -168,7 +198,7 @@ export default {
         case 'mysql':
           this.operaList.push({
             id: new Date().getTime(),
-            db: {},
+            db: '',
             type: 'mysql',
             sql: 'SELECT * FROM table_name',
             data_type: 'null',
@@ -178,9 +208,11 @@ export default {
         case 'mongo':
           this.operaList.push({
             id: new Date().getTime(),
-            db: {},
+            db: '',
             type: 'mongo',
-            sql: 'db.collection_name.findAll()',
+            collection: '',
+            function: '',
+            sql: '',
             data_type: 'null',
             var: ''
           })
@@ -188,6 +220,11 @@ export default {
       }
     },
     handlerSave() {
+      this.operaList.forEach(opera => {
+        if(opera.type == 'mysql' || opera.type == 'mongo'){
+          opera.db = this.dbs.filter(db => db.id == opera.db)[0]
+        }
+      })
       this.opera.opera_list = this.operaList
       this.opera.return = this.ret
       this.loading = true

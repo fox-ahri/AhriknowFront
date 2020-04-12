@@ -8,6 +8,7 @@ export default new Vuex.Store({
 		refresh: '',
 		token: localStorage.getItem('token'),
 		jurisdictions: [],
+		axiosPromiseCancel: []
 	},
 	mutations: {
 		refresh(state, time) {
