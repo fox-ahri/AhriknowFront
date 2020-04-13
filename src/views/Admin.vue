@@ -33,16 +33,16 @@
             unique-opened
           >
             <el-menu-item index="/admin/welcome">
-              <i class="el-icon-s-home"></i>
+              <i class="iconfont icon-welcome"></i>
               <span slot="title">Welcome</span>
             </el-menu-item>
             <el-menu-item index="/admin/userinfo">
-              <i class="el-icon-warning"></i>
+              <i class="iconfont icon-user"></i>
               <span slot="title">我的信息</span>
             </el-menu-item>
             <el-submenu index="/admin/notebook" v-if="jurisdictions.indexOf('狸知云笔记') > -1">
               <template slot="title">
-                <i class="el-icon-s-management"></i>
+                <i class="iconfont icon-book"></i>
                 <span>狸知云笔记</span>
               </template>
               <el-menu-item-group>
@@ -52,7 +52,7 @@
             </el-submenu>
             <el-submenu index="/admin/database">
               <template slot="title">
-                <i class="el-icon-s-management"></i>
+                <i class="iconfont icon-database"></i>
                 <span>数据库管理</span>
               </template>
               <el-menu-item-group>
@@ -61,7 +61,7 @@
             </el-submenu>
             <el-submenu index="/admin/restapi">
               <template slot="title">
-                <i class="el-icon-s-management"></i>
+                <i class="iconfont icon-api"></i>
                 <span>Restful 接口</span>
               </template>
               <el-menu-item-group>
@@ -70,7 +70,7 @@
             </el-submenu>
             <el-submenu index="/admin/person" v-if="jurisdictions.indexOf('人员管理') > -1">
               <template slot="title">
-                <i class="el-icon-s-tools"></i>
+                <i class="iconfont icon-user1"></i>
                 <span>人员管理</span>
               </template>
               <el-menu-item-group>
@@ -88,7 +88,7 @@
             </el-submenu>
             <el-submenu index="/admin/setting" v-if="jurisdictions.indexOf('系统设置') > -1">
               <template slot="title">
-                <i class="el-icon-s-tools"></i>
+                <i class="iconfont icon-setting"></i>
                 <span>系统设置</span>
               </template>
               <el-menu-item-group>
@@ -165,6 +165,10 @@ export default {
   width: 100%;
   height: 100%;
   overflow: hidden;
+  i {
+    font-size: 20px;
+    margin-right: 10px;
+  }
   .el-container {
     height: 100%;
   }
