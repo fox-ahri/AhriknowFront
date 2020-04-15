@@ -12,7 +12,6 @@ import VCharts from 'v-charts'
 Vue.use(VCharts)
 import mavonEditor from 'mavon-editor'
 import 'mavon-editor/dist/css/index.css'
-// import 'mavon-editor/dist/highlightjs/styles/atom-one-dark.min.css'
 Vue.use(mavonEditor)
 
 Vue.config.productionTip = false

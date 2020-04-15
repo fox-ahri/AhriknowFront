@@ -13,6 +13,7 @@
     "element-ui": "^2.13.0",
     "markdown-it": "^10.0.0",
     "mavon-editor": "^2.8.0",
+    "monaco-editor": "^0.20.0",
     "v-charts": "^1.19.0",
     "vue": "^2.6.11",
     "vue-axios": "^2.1.5",
