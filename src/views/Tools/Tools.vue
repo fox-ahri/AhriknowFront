@@ -19,10 +19,10 @@
           <i class="iconfont icon-tupian"></i>
           <span slot="title">占位图片</span>
         </el-menu-item>
-        <!-- <el-menu-item index="4">
+        <el-menu-item index="/tools/ocr">
           <i class="iconfont icon-wulianwang-ocr"></i>
           <span slot="title">文字识别</span>
-        </el-menu-item>-->
+        </el-menu-item>
       </el-menu>
     </aside>
     <section class="section">

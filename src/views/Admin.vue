@@ -50,22 +50,28 @@
                 <el-menu-item index="/admin/tag" v-if="jurisdictions.indexOf('标签') > -1">标签</el-menu-item>
               </el-menu-item-group>
             </el-submenu>
-            <el-submenu index="/admin/database">
+            <el-submenu index="/admin/database" v-if="jurisdictions.indexOf('数据库管理') > -1">
               <template slot="title">
                 <i class="iconfont icon-database"></i>
                 <span>数据库管理</span>
               </template>
               <el-menu-item-group>
-                <el-menu-item index="/admin/database-db">Database</el-menu-item>
+                <el-menu-item
+                  index="/admin/database-db"
+                  v-if="jurisdictions.indexOf('数据库') > -1"
+                >Database</el-menu-item>
               </el-menu-item-group>
             </el-submenu>
-            <el-submenu index="/admin/restapi">
+            <el-submenu index="/admin/restapi" v-if="jurisdictions.indexOf('接口管理') > -1">
               <template slot="title">
                 <i class="iconfont icon-api"></i>
                 <span>Restful 接口</span>
               </template>
               <el-menu-item-group>
-                <el-menu-item index="/admin/restapi-project">项目管理</el-menu-item>
+                <el-menu-item
+                  index="/admin/restapi-project"
+                  v-if="jurisdictions.indexOf('接口管理') > -1"
+                >项目管理</el-menu-item>
               </el-menu-item-group>
             </el-submenu>
             <el-submenu index="/admin/person" v-if="jurisdictions.indexOf('人员管理') > -1">

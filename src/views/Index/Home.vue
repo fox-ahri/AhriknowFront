@@ -116,6 +116,7 @@ export default {
     .el-card {
       width: 100%;
       height: 100%;
+      background: #fffc;
     }
   }
 }

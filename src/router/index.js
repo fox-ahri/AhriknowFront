@@ -52,7 +52,7 @@ const routes = [
 			login: true,
 		},
 		redirect: '/admin/welcome',
-		children: Admin
+		children: Admin,
 	},
 	{
 		path: '/admin/edit',
@@ -105,22 +105,5 @@ router.beforeEach((to, from, next) => {
 		next()
 	}
 })
-
-// this.axios
-// .get(`${this.url}/admin/person/jur/`)
-// .then(res => {
-//   if (res.data.code === 200) {
-// 	if (res.data.data.indexOf('狸知云笔记') < 0) {
-// 	  this.$router.push('/admin')
-// 	  return
-// 	}
-// 	this.$store.commit('jurisdictions', res.data.data)
-//   } else {
-// 	console.log(res.data.msg)
-//   }
-// })
-// .catch(err => {
-//   this.$message.error(err.message)
-// })
 
 export default router

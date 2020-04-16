@@ -4,6 +4,7 @@
       <el-image class="img" :src="url" fit="cover" lazy :preview-src-list="[url]"></el-image>
     </el-card>
     <el-card class="params">
+      <h3 style="margin-left: 24px">点击图片大图预览</h3>
       <el-form ref="form" label-width="80px">
         <el-form-item label="宽 × 高">
           <div class="item">
@@ -95,7 +96,7 @@ export default {
           max: '7300'
         }
       ],
-      url: '',
+      url: 'https://api.ahriknow.com/image',
       params: {
         size: {
           work: false,

@@ -72,10 +72,12 @@
             </el-select>
           </el-form-item>
           <el-form-item label="角色">
-            <el-select v-model="form.role" placeholder="请选择角色">
-              <el-option label="空" :value="null"></el-option>
-              <el-option v-for="i in roles" :key="i.id" :label="i.name" :value="i.id"></el-option>
-            </el-select>
+            <el-transfer
+              v-model="form.roles"
+              :data="roles"
+              :props="{key: 'id', label: 'name'}"
+              :titles="['角色列表', '用户角色']"
+            ></el-transfer>
           </el-form-item>
           <el-form-item label="昵称">
             <el-input v-model="form.nickname" autocomplete="off" @keyup.enter.native="add"></el-input>
@@ -141,6 +143,7 @@ export default {
       dialogVisible: false,
       dialogManage: false,
       form: {
+        roles: [],
         userinfo: {},
         department: ''
       },
@@ -309,6 +312,7 @@ export default {
     },
     close() {
       this.form = {
+        roles: [],
         userinfo: {},
         department: ''
       }

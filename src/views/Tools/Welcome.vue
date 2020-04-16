@@ -1,6 +1,6 @@
 <template>
   <div id="tools-welcome" class="tools-welcome">
-    <h1>tools-welcome</h1>
+    <h1>WELCOME</h1>
   </div>
 </template>
 
@@ -14,5 +14,10 @@ export default {
 #tools-welcome {
   width: 100%;
   height: 100%;
+  padding: 100px;
+  text-align: center;
+  h1 {
+    font-size: 60px;
+  }
 }
 </style>

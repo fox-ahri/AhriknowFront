@@ -14,4 +14,9 @@ export default [
 		name: 'tools-image',
 		component: () => import('../views/Tools/Image.vue'),
 	},
+	{
+		path: 'ocr',
+		name: 'tools-ocr',
+		component: () => import('../views/Tools/OCR.vue'),
+	},
 ]
