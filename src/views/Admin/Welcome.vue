@@ -7,7 +7,8 @@
     element-loading-spinner="el-icon-loading"
     element-loading-background="rgba(0, 0, 0, 0.8)"
   >
-    <el-card>
+    <iframe src="/#/view" frameborder="0"></iframe>
+    <!-- <el-card>
       <ve-line :data="chartData1" :data-zoom="dataZoom"></ve-line>
     </el-card>
     <el-card>
@@ -21,7 +22,7 @@
         <ve-pie :data="chartData4"></ve-pie>
       </el-card>
     </div>
-    <div class="bottom"></div>
+    <div class="bottom"></div>-->
   </div>
 </template>
 
@@ -396,7 +397,12 @@ export default {
 #welcome {
   width: 100%;
   height: 100%;
-  padding: 30px;
+  padding: 10px;
+  iframe {
+    width: 100%;
+    height: 100%;
+  }
+  // padding: 30px;
   .line {
     margin: 30px 0;
     display: flex;

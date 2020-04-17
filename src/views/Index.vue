@@ -2,6 +2,7 @@
   <div id="index" class="index">
     <nav>
       <span class="logo" @click="$router.push('/')">AHRIKNOW</span>
+      <router-link to="/view">View</router-link>
       <router-link to="/book">Notebook</router-link>
       <router-link to="/tools">Tools</router-link>
       <router-link class="console" to="/admin">控制台</router-link>

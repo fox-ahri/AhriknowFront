@@ -9,6 +9,11 @@ Vue.use(VueRouter)
 
 const routes = [
 	{
+		path: '/view',
+		name: 'view',
+		component: () => import('../views/Visualization.vue'),
+	},
+	{
 		path: '/auth',
 		name: 'auth',
 		component: () => import('../views/Auth/Auth.vue'),

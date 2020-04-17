@@ -101,4 +101,21 @@ export default [
 			jur: '数据库',
 		},
 	},
+	/* ---------------------------------- Blog ---------------------------------- */
+	{
+		path: 'blog/tag',
+		name: 'blog-tag',
+		component: () => import('../views/Admin/Blog/Tag.vue'),
+		meta: {
+			jur: '标签管理',
+		},
+	},
+	{
+		path: 'blog/category',
+		name: 'blog-category',
+		component: () => import('../views/Admin/Blog/Category.vue'),
+		meta: {
+			jur: '分类专栏',
+		},
+	},
 ]
