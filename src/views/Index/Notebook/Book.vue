@@ -9,18 +9,21 @@
   >
     <div class="container">
       <div class="search">
-        <el-input placeholder="请输入内容" v-model="search" class="input-with-select">
-          <el-select
-            v-model="select"
-            slot="prepend"
-            multiple
-            placeholder="请选择"
-            style="width: 200px"
-          >
-            <el-option v-for="i in tags" :key="i.id" :label="i.name" :value="i.id"></el-option>
-          </el-select>
-          <el-button slot="append" icon="el-icon-search" @click="get_search">搜 索</el-button>
-        </el-input>
+        <div class="input">
+          <el-button icon="el-icon-arrow-left" @click="$router.go(-1)"></el-button>
+          <el-input placeholder="请输入内容" v-model="search" class="input-with-select">
+            <el-select
+              v-model="select"
+              slot="prepend"
+              multiple
+              placeholder="请选择"
+              style="width: 200px"
+            >
+              <el-option v-for="i in tags" :key="i.id" :label="i.name" :value="i.id"></el-option>
+            </el-select>
+            <el-button slot="append" icon="el-icon-search" @click="get_search">搜 索</el-button>
+          </el-input>
+        </div>
         <el-divider></el-divider>
       </div>
       <div class="book" v-for="i in books" :key="i.id">
@@ -162,6 +165,9 @@ export default {
     flex-wrap: wrap;
     padding-top: 20px;
     .search {
+      .input {
+        display: flex;
+      }
       width: 1080px;
     }
     .book {

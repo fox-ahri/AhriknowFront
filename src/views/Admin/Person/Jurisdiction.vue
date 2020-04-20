@@ -127,6 +127,7 @@ export default {
         this.axios
           .put(`${this.url}/admin/person/jurisdiction/${this.form.id}/`, this.form)
           .then(res => {
+            this.loading = false
             if (res.data.code === 200) {
               this.$message({
                 message: '更新成功',
@@ -137,7 +138,6 @@ export default {
             } else {
               this.$message.error(res.data.msg)
             }
-            this.loading = false
           })
           .catch(err => {
             this.$message.error(err.message)
@@ -148,6 +148,7 @@ export default {
         this.axios
           .post(`${this.url}/admin/person/jurisdiction/`, this.form)
           .then(res => {
+            this.loading = false
             if (res.data.code === 200) {
               this.$message({
                 message: '添加成功',
@@ -158,7 +159,6 @@ export default {
             } else {
               this.$message.error(res.data.msg)
             }
-            this.loading = false
           })
           .catch(err => {
             this.$message.error(err.message)
@@ -177,6 +177,7 @@ export default {
           this.axios
             .delete(`${this.url}/admin/person/jurisdiction/${data.id}/`)
             .then(res => {
+              this.loading = false
               if (res.data.code === 200) {
                 this.$message({
                   message: '删除成功',
@@ -186,7 +187,6 @@ export default {
               } else {
                 this.$message.error(res.data.msg)
               }
-              this.loading = false
             })
             .catch(err => {
               this.$message.error(err.message)

@@ -111,11 +111,43 @@ export default [
 		},
 	},
 	{
+		path: 'blog/tab',
+		name: 'blog-tab',
+		component: () => import('../views/Admin/Blog/Tab.vue'),
+		meta: {
+			jur: '专栏管理',
+		},
+	},
+	{
 		path: 'blog/category',
 		name: 'blog-category',
 		component: () => import('../views/Admin/Blog/Category.vue'),
 		meta: {
 			jur: '分类专栏',
+		},
+	},
+	{
+		path: 'blog/article',
+		name: 'blog-article',
+		component: () => import('../views/Admin/Blog/Article.vue'),
+		meta: {
+			jur: '文章管理',
+		},
+	},
+	{
+		path: 'blog/edit',
+		name: 'blog-edit',
+		component: () => import('../views/Admin/Blog/Edit.vue'),
+		meta: {
+			jur: '新建文章',
+		},
+	},
+	{
+		path: 'blog/comment',
+		name: 'blog-comment',
+		component: () => import('../views/Admin/Blog/Comment.vue'),
+		meta: {
+			jur: '评论管理',
 		},
 	},
 ]

@@ -52,15 +52,28 @@
             </el-submenu>
             <el-submenu index="/admin/blog" v-if="jurisdictions.indexOf('狸知博客') > -1">
               <template slot="title">
-                <i class="iconfont icon-book"></i>
+                <i class="iconfont icon-blogger"></i>
                 <span>狸知博客</span>
               </template>
               <el-menu-item-group>
                 <el-menu-item index="/admin/blog/tag" v-if="jurisdictions.indexOf('标签管理') > -1">标签管理</el-menu-item>
+                <el-menu-item index="/admin/blog/tab" v-if="jurisdictions.indexOf('专栏管理') > -1">专栏管理</el-menu-item>
                 <el-menu-item
                   index="/admin/blog/category"
                   v-if="jurisdictions.indexOf('分类专栏') > -1"
                 >分类专栏</el-menu-item>
+                <el-menu-item
+                  index="/admin/blog/article"
+                  v-if="jurisdictions.indexOf('文章管理') > -1"
+                >文章管理</el-menu-item>
+                <el-menu-item
+                  index="/admin/blog/edit"
+                  v-if="jurisdictions.indexOf('新建文章') > -1"
+                >新建文章</el-menu-item>
+                <el-menu-item
+                  index="/admin/blog/comment"
+                  v-if="jurisdictions.indexOf('评论管理') > -1"
+                >评论管理</el-menu-item>
               </el-menu-item-group>
             </el-submenu>
             <el-submenu index="/admin/database" v-if="jurisdictions.indexOf('数据库管理') > -1">
@@ -206,6 +219,7 @@ export default {
 
   .el-main {
     padding: 0;
+    position: relative;
   }
 }
 </style>

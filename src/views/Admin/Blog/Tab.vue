@@ -1,62 +1,36 @@
 <template>
   <div
-    id="blog-category"
-    class="blog-category"
+    id="blog-tab"
+    class="blog-tab"
     v-loading="loading"
     element-loading-text="拼命加载中"
     element-loading-spinner="el-icon-loading"
     element-loading-background="rgba(0, 0, 0, 0.8)"
   >
     <div class="title">
-      <h2>分类管理</h2>
-      <el-button @click="dialogVisible = true">分类管理</el-button>
+      <h2>专栏管理</h2>
+      <el-button @click="dialogVisible = true">专栏管理</el-button>
     </div>
     <el-divider></el-divider>
-    <el-table
-      :data="categories.filter(data => !search || data.name.toLowerCase().includes(search.toLowerCase()))"
-      style="width: 100%"
-      border
-    >
+    <el-table :data="tabs" style="width: 100%" border>
+      <el-table-column type="index" width="50"></el-table-column>
       <el-table-column label="Name" prop="name"></el-table-column>
-      <el-table-column label="Describe" prop="describe"></el-table-column>
-      <el-table-column label="Image" prop="image">
-        <template slot-scope="scope">
-          <el-popover placement="top-start" width="200" trigger="hover">
-            <div slot="reference">{{scope.row.image}}</div>
-            <el-image :src="scope.row.image" fit="cover"></el-image>
-          </el-popover>
-        </template>
-      </el-table-column>
+      <el-table-column label="Index" prop="index"></el-table-column>
       <el-table-column label="Date" prop="date"></el-table-column>
       <el-table-column align="right">
-        <template slot="header" slot-scope="scope">
-          <el-input v-model="search" size="mini" placeholder="输入关键字搜索" />
-        </template>
         <template slot-scope="scope">
           <el-button size="mini" type="primary" @click="handleEdit(scope.row)">Edit</el-button>
           <el-button size="mini" type="danger" @click="handleDelete(scope.row)">Delete</el-button>
         </template>
       </el-table-column>
     </el-table>
-    <el-dialog title="分类管理" :visible.sync="dialogVisible" width="50%" :before-close="close">
+    <el-dialog title="专栏管理" :visible.sync="dialogVisible" width="50%" :before-close="close">
       <el-form :model="form" :label-width="'100px'">
-        <el-form-item label="分类名">
+        <el-form-item label="专栏名">
           <el-input v-model="form.name" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="分类描述">
-          <el-input v-model="form.describe" type="textarea" row="4" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="分类描述">
-          <el-upload
-            class="avatar-uploader"
-            :action="action"
-            :show-file-list="false"
-            :on-success="handleImageSuccess"
-            :headers="{token: token}"
-          >
-            <img v-if="image" :src="image" class="avatar" />
-            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-          </el-upload>
+        <el-form-item label="专栏顺序">
+          <el-input v-model="form.index" autocomplete="off"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -69,33 +43,21 @@
 
 <script>
 export default {
-  name: 'blog-category',
+  name: 'blog-tab',
   data() {
     return {
-      action: `${this.url}/admin/blog/upload/`,
-      token: localStorage.getItem('token'),
       loading: false,
       dialogVisible: false,
-      categories: [],
-      search: '',
-      form: {},
-      image: ''
+      tabs: [],
+      form: {}
     }
   },
   methods: {
-    handleImageSuccess(res) {
-      if (res.code === 200) {
-        this.image = res.data
-      } else {
-        this.$message.error('上传失败')
-      }
-    },
     handleAdd() {
-      this.form.image = this.image
       if (this.form.hasOwnProperty('id')) {
         this.loading = true
         this.axios
-          .put(`${this.url}/admin/blog/category/${this.form.id}/`, this.form)
+          .put(`${this.url}/admin/blog/tab/${this.form.id}/`, this.form)
           .then(res => {
             this.loading = false
             if (res.data.code === 200) {
@@ -103,7 +65,7 @@ export default {
                 message: '更新成功',
                 type: 'success'
               })
-              this.get_categories()
+              this.get_tabs()
               this.dialogVisible = false
             } else {
               this.$message.error(res.data.msg)
@@ -116,7 +78,7 @@ export default {
       } else {
         this.loading = true
         this.axios
-          .post(`${this.url}/admin/blog/category/`, this.form)
+          .post(`${this.url}/admin/blog/tab/`, this.form)
           .then(res => {
             this.loading = false
             if (res.data.code === 200) {
@@ -124,7 +86,7 @@ export default {
                 message: '添加成功',
                 type: 'success'
               })
-              this.get_categories()
+              this.get_tabs()
               this.dialogVisible = false
             } else {
               this.$message.error(res.data.msg)
@@ -138,11 +100,10 @@ export default {
     },
     handleEdit(val) {
       this.form = val
-      this.image = val.image
       this.dialogVisible = true
     },
     handleDelete(val) {
-      this.$confirm('此操作将永久删除该分类及其下属文章, 是否继续?', '提示', {
+      this.$confirm('此操作将永久删除该专栏及其下属文章, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -150,7 +111,7 @@ export default {
         .then(() => {
           this.loading = true
           this.axios
-            .delete(`${this.url}/admin/blog/category/${val.id}/`)
+            .delete(`${this.url}/admin/blog/tab/${val.id}/`)
             .then(res => {
               this.loading = false
               if (res.data.code === 200) {
@@ -158,9 +119,7 @@ export default {
                   message: '删除成功',
                   type: 'success'
                 })
-                this.categories = this.categories.filter(
-                  category => category.id != val.id
-                )
+                this.tabs = this.tabs.filter(tab => tab.id != val.id)
               } else {
                 this.$message.error(res.data.msg)
               }
@@ -181,14 +140,14 @@ export default {
       this.form = {}
       this.dialogVisible = false
     },
-    get_categories() {
+    get_tabs() {
       this.loading = true
       this.axios
-        .get(`${this.url}/admin/blog/category/`)
+        .get(`${this.url}/admin/blog/tab/`)
         .then(res => {
           this.loading = false
           if (res.data.code === 200) {
-            this.categories = res.data.data
+            this.tabs = res.data.data
           } else {
             this.$message.error(res.data.msg)
           }
@@ -200,13 +159,13 @@ export default {
     }
   },
   mounted() {
-    this.get_categories()
+    this.get_tabs()
   }
 }
 </script>
 
 <style lang="scss" scoped>
-#blog-category {
+#blog-tab {
   width: 100%;
   height: 100%;
   padding: 40px;
@@ -219,30 +178,6 @@ export default {
   .title {
     display: flex;
     justify-content: space-between;
-  }
-  .avatar-uploader .el-upload {
-    border: 1px dashed #d9d9d9;
-    border-radius: 6px;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-  }
-  .avatar-uploader .el-upload:hover {
-    border-color: #409eff;
-  }
-  .avatar-uploader-icon {
-    font-size: 28px;
-    color: #8c939d;
-    width: 178px;
-    height: 178px;
-    line-height: 178px;
-    text-align: center;
-    border: dashed 2px #ccc;
-  }
-  .avatar {
-    max-width: 478px;
-    max-height: 378px;
-    display: block;
   }
 }
 </style>

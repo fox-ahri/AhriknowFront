@@ -30,17 +30,27 @@ const routes = [
 				name: 'home',
 				component: Home,
 			},
-			{
-				path: 'book',
-				name: 'index-book',
-				component: () => import('../views/Index/Notebook/Book.vue'),
-			},
-			{
-				path: 'read',
-				name: 'index-read',
-				component: () => import('../views/Index/Notebook/Read.vue'),
-			},
 		],
+	},
+	{
+		path: '/blog/index',
+		name: 'index-blog-index',
+		component: () => import('../views/Index/Blog/Index.vue'),
+	},
+	{
+		path: '/blog/read',
+		name: 'index-blog-read',
+		component: () => import('../views/Index/Blog/Read.vue'),
+	},
+	{
+		path: '/notebook/book',
+		name: 'index-book',
+		component: () => import('../views/Index/Notebook/Book.vue'),
+	},
+	{
+		path: '/notebook/read',
+		name: 'index-read',
+		component: () => import('../views/Index/Notebook/Read.vue'),
 	},
 	{
 		path: '/tools',

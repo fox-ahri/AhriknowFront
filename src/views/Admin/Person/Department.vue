@@ -121,17 +121,18 @@ export default {
     },
     handlerManage() {
       this.loading = true
+      this.dialogManage = false
       this.axios
         .put(`${this.url}/admin/person/department/${this.current.id}/`, {
           jurisdictions: this.$refs.tree.getCheckedKeys()
         })
         .then(res => {
+          this.loading = false
           if (res.data.code === 200) {
             this.$message({
               message: '更新成功',
               type: 'success'
             })
-            this.dialogManage = false
             this.$store.commit('refresh', new Date().getTime())
             if (this.$store.state.jurisdictions.indexOf('部门管理') < 0) {
               this.$router.push('/admin')
@@ -141,7 +142,6 @@ export default {
           } else {
             this.$message.error(res.data.msg)
           }
-          this.loading = false
         })
         .catch(err => {
           this.$message.error(err.message)
@@ -187,7 +187,10 @@ export default {
       if (this.form.hasOwnProperty('id')) {
         this.loading = true
         this.axios
-          .put(`${this.url}/admin/person/department/${this.form.id}/`, this.form)
+          .put(
+            `${this.url}/admin/person/department/${this.form.id}/`,
+            this.form
+          )
           .then(res => {
             if (res.data.code === 200) {
               this.$message({
