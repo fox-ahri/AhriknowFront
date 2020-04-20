@@ -12,28 +12,29 @@
       <el-button @click="dialogVisible = true">新 建</el-button>
     </div>
     <el-divider></el-divider>
+    <el-tag>URL: database.ahriknow.com</el-tag>
     <el-table
       :data="dbs.filter(data => !search || data.dbname.toLowerCase().includes(search.toLowerCase()))"
       style="width: 100%"
       border
     >
-      <el-table-column label="Type">
+      <el-table-column label="数据库类型">
         <template slot-scope="scope">
           <el-tag :type="scope.row.type == 'mysql'?'primary':'success'">{{scope.row.type}}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="DB name" prop="dbname"></el-table-column>
-      <el-table-column label="Username" prop="username"></el-table-column>
-      <el-table-column label="Password">
+      <el-table-column label="数据库名称" prop="dbname"></el-table-column>
+      <el-table-column label="用户名" prop="username"></el-table-column>
+      <el-table-column label="密码">
         <template slot-scope="scope">{{scope.row.password}}</template>
       </el-table-column>
       <el-table-column align="right">
         <template slot="header" slot-scope="scope">
-          <el-input v-model="search" size="mini" placeholder="输入关键字搜索" />
+          <el-input v-model="search" size="mini" placeholder="输入数据库名搜索" />
         </template>
         <template slot-scope="scope">
           <!-- <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">Edit</el-button> -->
-          <el-button size="mini" type="danger" @click="handleDelete(scope.row)">Delete</el-button>
+          <el-button size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>

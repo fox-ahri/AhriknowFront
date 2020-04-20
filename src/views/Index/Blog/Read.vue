@@ -3,12 +3,14 @@
     <div class="container">
       <div class="markdown-body" v-html="html"></div>
       <el-input v-show="reply" type="textarea" :row="4" v-model="content"></el-input>
-      <div class="opera">
+      <el-divider></el-divider>
+      <h3 v-if="!article.commented">次文章已关闭评论功能</h3>
+      <div class="opera" v-if="article.commented">
         <el-button v-show="!reply" @click="reply = true" type="text">留言</el-button>
         <el-button v-show="reply" @click="reply = false" type="text">取消</el-button>
         <el-button v-show="reply" @click="add" type="text">确定</el-button>
       </div>
-      <div class="comment">
+      <div class="comment" v-if="article.commented">
         <Comment :comments="comments" />
       </div>
       <div style="height: 300px"></div>

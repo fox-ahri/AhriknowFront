@@ -17,17 +17,17 @@
       style="width: 100%"
       border
     >
-      <el-table-column label="Name" prop="name"></el-table-column>
-      <el-table-column label="Describe" prop="describe"></el-table-column>
+      <el-table-column label="项目名" prop="name"></el-table-column>
+      <el-table-column label="描述" prop="describe"></el-table-column>
       <el-table-column label="Api Auth" prop="auth"></el-table-column>
       <el-table-column align="right">
         <template slot="header" slot-scope="scope">
-          <el-input v-model="search" size="mini" placeholder="输入关键字搜索" />
+          <el-input v-model="search" size="mini" placeholder="输入项目名搜索" />
         </template>
         <template slot-scope="scope">
           <!-- <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">Edit</el-button> -->
-          <el-button size="mini" type="success" @click="handleManage(scope.row)">Manage</el-button>
-          <el-button size="mini" type="danger" @click="handleDelete(scope.row)">Delete</el-button>
+          <el-button size="mini" type="success" @click="handleManage(scope.row)">管理</el-button>
+          <el-button size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>

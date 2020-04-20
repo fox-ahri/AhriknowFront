@@ -14,7 +14,7 @@
       </nav>
       <section class="section">
         <div class="plant"></div>
-        <article class="article">
+        <article class="article" v-loading="loading">
           <div class="item" v-for="i in articles" :key="i.id">
             <div class="title" :title="i.title" @click="read(i.id)">
               <el-tag type="success" v-if="i.type == 1">原创</el-tag>
@@ -53,7 +53,8 @@ export default {
       articles: [],
       height: '800',
       page: 1,
-      size: 10
+      size: 10,
+      loading: false
     }
   },
   methods: {
@@ -91,6 +92,7 @@ export default {
         })
     },
     get_articles(id = 0) {
+      this.loading = true
       this.axios
         .get(`${this.url}/index/blog/article/`, {
           params: {
@@ -100,12 +102,14 @@ export default {
           }
         })
         .then(res => {
+          this.loading = false
           this.page++
           res.data.results.forEach(article => {
             this.articles.push(article)
           })
         })
         .catch(err => {
+          this.loading = false
           this.$message({
             message: '没有更多了',
             type: 'warning'

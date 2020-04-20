@@ -26,10 +26,11 @@
       :data="articles.filter(data => !search || data.name.toLowerCase().includes(search.toLowerCase()))"
       style="width: 100%"
       border
+      :default-sort="{prop: 'update', order: 'descending'}"
     >
-      <el-table-column label="Title" prop="title"></el-table-column>
-      <el-table-column label="Describe" prop="describe"></el-table-column>
-      <el-table-column label="Image" prop="image">
+      <el-table-column label="标题" prop="title"></el-table-column>
+      <el-table-column label="描述" prop="describe"></el-table-column>
+      <el-table-column label="图片" prop="image">
         <template slot-scope="scope">
           <el-popover placement="top-start" width="200" trigger="hover">
             <div slot="reference">{{scope.row.image}}</div>
@@ -37,15 +38,27 @@
           </el-popover>
         </template>
       </el-table-column>
-      <el-table-column label="Update" prop="update"></el-table-column>
-      <el-table-column align="right" width="260">
+      <el-table-column label="更新时间" prop="update" width="160" sortable></el-table-column>
+      <el-table-column label="草稿" prop="draft" width="180">
+        <template slot-scope="scope">
+          <el-switch
+            v-model="scope.row.draft"
+            active-color="#ff4949"
+            inactive-color="#13ce66"
+            active-text="收回为草稿"
+            inactive-text="发布"
+            @change="change(scope.row)"
+          ></el-switch>
+        </template>
+      </el-table-column>
+      <el-table-column align="right" width="210">
         <template slot="header" slot-scope="scope">
-          <el-input v-model="search" size="mini" placeholder="输入关键字搜索" />
+          <el-input v-model="search" size="mini" placeholder="输入标题进行搜索" />
         </template>
         <template slot-scope="scope">
-          <el-button size="mini" type="primary" @click="handleComment(scope.row)">Comment</el-button>
-          <el-button size="mini" type="primary" @click="handleEdit(scope.row)">Edit</el-button>
-          <el-button size="mini" type="danger" @click="handleDelete(scope.row)">Delete</el-button>
+          <el-button size="mini" type="primary" @click="handleComment(scope.row)">评论</el-button>
+          <el-button size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
+          <el-button size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -80,6 +93,27 @@ export default {
     }
   },
   methods: {
+    change(val) {
+      this.axios
+        .put(`${this.url}/admin/blog/article/${val.id}/`, {
+          draft: val.draft
+        })
+        .then(res => {
+          this.loading = false
+          if (res.data.code === 200) {
+            this.$message({
+              message: '更新成功',
+              type: 'success'
+            })
+          } else {
+            this.$message.error(res.data.msg)
+          }
+        })
+        .catch(err => {
+          this.$message.error(err.message)
+          this.loading = false
+        })
+    },
     handleComment(val) {
       this.$router.push({ name: 'blog-comment', query: { id: val.id } })
     },

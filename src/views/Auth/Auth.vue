@@ -102,6 +102,7 @@ export default {
         .then(res => {
           if (res.data.code === 200) {
             this.$store.commit('token', res.data.data.token)
+            this.$store.commit('userinfo', res.data.data)
             this.$router.push(localStorage.getItem('from') || '/')
           } else {
             this.$message.error(res.data.msg)

@@ -114,7 +114,7 @@
       </el-form-item>
       <el-form-item>
         <div v-if="this.$route.query.hasOwnProperty('id')">
-          <el-button @click="handleAdd">更改</el-button>
+          <el-button @click="handleAdd">保存更改</el-button>
         </div>
         <div v-else>
           <el-button @click="save_as_draft">保存为草稿</el-button>
@@ -175,9 +175,13 @@ export default {
       }
     },
     add_tag(val) {
-      this.select.push(val)
+      if (this.select.length < 5) this.select.push(val)
+      else
+        this.$message({
+          message: '最多添加 5 个标签',
+          type: 'warning'
+        })
     },
-    remove(id) {},
     save_as_draft() {
       this.form.draft = true
       this.handleAdd()
@@ -187,11 +191,11 @@ export default {
       this.handleAdd()
     },
     handleAdd() {
+      this.loading = true
       this.form.image = this.image
       this.form.content = this.content
       this.form.tags = this.select.map(tag => tag.id)
       if (this.$route.query.hasOwnProperty('id')) {
-        this.loading = true
         this.axios
           .put(
             `${this.url}/admin/blog/article/${this.$route.query.id}/`,
@@ -215,7 +219,6 @@ export default {
             this.loading = false
           })
       } else {
-        this.loading = true
         this.axios
           .post(`${this.url}/admin/blog/article/`, this.form)
           .then(res => {
@@ -290,6 +293,7 @@ export default {
           this.loading = false
           if (res.data.code === 200) {
             this.tags = res.data.data
+            this.get_children(this.tags[0].id)
           } else {
             this.$message.error(res.data.msg)
           }

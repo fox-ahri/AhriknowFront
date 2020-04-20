@@ -9,7 +9,26 @@
   >
     <div class="title">
       <h2>评论管理</h2>
-      <div></div>
+      <div class="opera">
+        <el-input
+          v-model="article_name"
+          placeholder="%文章标题%"
+          v-show="!$route.query.hasOwnProperty('id')"
+        ></el-input>
+        <el-date-picker
+          v-show="!$route.query.hasOwnProperty('id')"
+          v-model="article_date"
+          type="daterange"
+          align="right"
+          unlink-panels
+          range-separator="至"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+          :picker-options="pickerOptions"
+        ></el-date-picker>
+        <el-button @click="find" v-show="!$route.query.hasOwnProperty('id')">查询</el-button>
+        <el-button @click="$router.go(-1)" v-show="$route.query.hasOwnProperty('id')">返回文章列表</el-button>
+      </div>
     </div>
     <el-divider></el-divider>
     <el-table
@@ -17,18 +36,32 @@
       style="width: 100%"
       border
     >
-      <el-table-column label="Date" prop="date"></el-table-column>
-      <el-table-column label="Content" prop="content"></el-table-column>
-      <el-table-column label="Article" prop="article"></el-table-column>
-      <el-table-column align="right">
+      <el-table-column label="评论时间" prop="date" width="160"></el-table-column>
+      <el-table-column prop="content">
         <template slot="header" slot-scope="scope">
-          <el-input v-model="search" size="mini" placeholder="输入关键字搜索" />
+          <el-input v-model="search" size="mini" placeholder="输入评论内容搜索" />
         </template>
+        <template slot-scope="scope">{{scope.row.content}}</template>
+      </el-table-column>
+      <el-table-column label="文章标题" prop="article"></el-table-column>
+      <el-table-column label="删除" align="center" width="100">
         <template slot-scope="scope">
           <el-button size="mini" type="danger" @click="handleDelete(scope.row)">Delete</el-button>
         </template>
       </el-table-column>
     </el-table>
+    <div class="pagination">
+      <el-pagination
+        background
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="currentPage"
+        :page-sizes="[10, 20, 50, 100]"
+        :page-size="size"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="count"
+      ></el-pagination>
+    </div>
   </div>
 </template>
 
@@ -37,23 +70,77 @@ export default {
   name: 'comment',
   data() {
     return {
+      currentPage: 1,
+      size: 10,
+      count: 0,
       comments: [],
       loading: false,
-      search: ''
+      search: '',
+      article_name: '',
+      pickerOptions: {
+        shortcuts: [
+          {
+            text: '最近一周',
+            onClick(picker) {
+              const end = new Date()
+              const start = new Date()
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
+              picker.$emit('pick', [start, end])
+            }
+          },
+          {
+            text: '最近一个月',
+            onClick(picker) {
+              const end = new Date()
+              const start = new Date()
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
+              picker.$emit('pick', [start, end])
+            }
+          },
+          {
+            text: '最近三个月',
+            onClick(picker) {
+              const end = new Date()
+              const start = new Date()
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
+              picker.$emit('pick', [start, end])
+            }
+          }
+        ]
+      },
+      article_date: []
     }
   },
   methods: {
+    handleSizeChange(val) {
+      this.size = val
+      this.get_comments(null)
+    },
+    handleCurrentChange(val) {
+      this.currentPage = val
+      this.get_comments(null)
+    },
+    find() {
+      this.currentPage = 1
+      this.get_comments(null)
+    },
     get_comments(id) {
       this.loading = true
       this.axios
-        .get(`${this.url}/admin/blog/comment/${id}`)
+        .get(`${this.url}/admin/blog/comment/`, {
+          params: {
+            id: id,
+            article: this.article_name,
+            from: this.article_date[0],
+            to: this.article_date[1],
+            page: this.currentPage,
+            size: this.size
+          }
+        })
         .then(res => {
           this.loading = false
-          if (res.data.code === 200) {
-            this.comments = res.data.data
-          } else {
-            this.$message.error(res.data.msg)
-          }
+          this.comments = res.data.results
+          this.count = res.data.count
         })
         .catch(err => {
           this.$message.error(err.message)
@@ -119,6 +206,22 @@ export default {
   .title {
     display: flex;
     justify-content: space-between;
+    .opera {
+      display: flex;
+      width: 700px;
+      justify-content: flex-end;
+      .el-input {
+        width: 200px;
+        margin-right: 10px;
+      }
+      .el-button {
+        margin-left: 10px;
+      }
+    }
+  }
+  .pagination {
+    text-align: right;
+    padding-top: 10px;
   }
 }
 </style>

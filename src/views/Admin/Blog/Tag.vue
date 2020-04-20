@@ -17,17 +17,17 @@
       style="width: 100%"
       border
     >
-      <el-table-column label="Name" prop="name"></el-table-column>
-      <el-table-column label="Date" prop="date"></el-table-column>
-      <el-table-column label="Weight" prop="weight"></el-table-column>
-      <el-table-column align="right">
+      <el-table-column label="标签名" prop="name"></el-table-column>
+      <el-table-column label="创建时间" prop="date"></el-table-column>
+      <el-table-column label="排序" prop="weight"></el-table-column>
+      <el-table-column align="right" width="210">
         <template slot="header" slot-scope="scope">
-          <el-input v-model="search" size="mini" placeholder="输入关键字搜索" />
+          <el-input v-model="search" size="mini" placeholder="输入标签名搜索" />
         </template>
         <template slot-scope="scope">
-          <el-button size="mini" type="primary" @click="handleEdit(scope.row)">Edit</el-button>
-          <el-button size="mini" type="success" @click="handleManage(scope.row)">Manage</el-button>
-          <el-button size="mini" type="danger" @click="handleDelete(scope.row)">Delete</el-button>
+          <el-button size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
+          <el-button size="mini" type="success" @click="handleManage(scope.row)">管理</el-button>
+          <el-button size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>

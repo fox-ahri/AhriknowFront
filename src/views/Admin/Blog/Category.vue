@@ -9,7 +9,7 @@
   >
     <div class="title">
       <h2>分类管理</h2>
-      <el-button @click="dialogVisible = true">分类管理</el-button>
+      <el-button @click="dialogVisible = true">添加分类</el-button>
     </div>
     <el-divider></el-divider>
     <el-table
@@ -17,9 +17,9 @@
       style="width: 100%"
       border
     >
-      <el-table-column label="Name" prop="name"></el-table-column>
-      <el-table-column label="Describe" prop="describe"></el-table-column>
-      <el-table-column label="Image" prop="image">
+      <el-table-column label="分类名" prop="name" width="200"></el-table-column>
+      <el-table-column label="分类描述" prop="describe"></el-table-column>
+      <el-table-column label="图片" prop="image">
         <template slot-scope="scope">
           <el-popover placement="top-start" width="200" trigger="hover">
             <div slot="reference">{{scope.row.image}}</div>
@@ -27,14 +27,14 @@
           </el-popover>
         </template>
       </el-table-column>
-      <el-table-column label="Date" prop="date"></el-table-column>
-      <el-table-column align="right">
+      <el-table-column label="创建时间" prop="date" width="160"></el-table-column>
+      <el-table-column align="right" width="150">
         <template slot="header" slot-scope="scope">
-          <el-input v-model="search" size="mini" placeholder="输入关键字搜索" />
+          <el-input v-model="search" size="mini" placeholder="输入分类名搜索" />
         </template>
         <template slot-scope="scope">
-          <el-button size="mini" type="primary" @click="handleEdit(scope.row)">Edit</el-button>
-          <el-button size="mini" type="danger" @click="handleDelete(scope.row)">Delete</el-button>
+          <el-button size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
+          <el-button size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>

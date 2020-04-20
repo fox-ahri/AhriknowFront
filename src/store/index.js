@@ -8,7 +8,8 @@ export default new Vuex.Store({
 		refresh: '',
 		token: localStorage.getItem('token'),
 		jurisdictions: [],
-		axiosPromiseCancel: []
+		axiosPromiseCancel: [],
+		userinfo: JSON.parse(localStorage.getItem('userinfo')),
 	},
 	mutations: {
 		refresh(state, time) {
@@ -20,6 +21,10 @@ export default new Vuex.Store({
 		},
 		jurisdictions(state, jurisdictions) {
 			state.jurisdictions = jurisdictions
+		},
+		userinfo(state, u) {
+			localStorage.setItem('userinfo', JSON.stringify(u))
+			state.userinfo = u
 		},
 	},
 	actions: {},
