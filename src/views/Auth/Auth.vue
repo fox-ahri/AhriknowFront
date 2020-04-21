@@ -8,16 +8,16 @@
     element-loading-background="rgba(0, 0, 0, 0.8)"
   >
     <div class="box">
-      <input type="radio" hidden name="tab" id="tab1" value="login" />
-      <input type="radio" hidden name="tab" id="tab2" value="sign up" />
-      <input type="radio" hidden name="tab" id="tab3" value="forget" />
+      <input type="radio" v-model="current" hidden name="tab" id="tab1" value="login" />
+      <input type="radio" v-model="current" hidden name="tab" id="tab2" value="signup" />
+      <input type="radio" v-model="current" hidden name="tab" id="tab3" value="forget" />
       <div class="item">
         <div class="account">
           <div class="login">
             <div class="container">
               <h1>SIGN IN</h1>
               <div class="to">
-                <label for="tab2">sign up</label>
+                <label class="label" for="tab2">sign up</label>
               </div>
               <input type="text" name="username" v-model="form.username" placeholder="Username" />
               <input
@@ -27,7 +27,7 @@
                 placeholder="Password"
                 @keyup.13="login"
               />
-              <label for="tab3" style="display: none">Forget Your Password!</label>
+              <label class="label lbf" for="tab3">Forget Your Password!</label>
               <button @click="login">登录</button>
             </div>
           </div>
@@ -35,7 +35,7 @@
             <div class="container">
               <h1>SIGN UP</h1>
               <div class="to">
-                <label for="tab1">login</label>
+                <label class="label" for="tab1">login</label>
               </div>
               <input type="text" name="username" v-model="reg.username" placeholder="Username" />
               <input type="password" name="password" v-model="reg.password" placeholder="Password" />
@@ -52,7 +52,22 @@
         </div>
         <div class="account">
           <div class="forget">
-            <label for="tab1">login</label>
+            <div class="container">
+              <h1>RESET PASSWORD</h1>
+              <div class="to">
+                <label class="label" for="tab1">login</label>
+              </div>
+              <input type="text" name="username" v-model="reg.username" placeholder="Username" />
+              <input type="password" name="password" v-model="reg.password" placeholder="Password" />
+              <input
+                type="password"
+                name="re-pass"
+                v-model="reg.re_pass"
+                placeholder="Re password"
+                @keyup.13="signup"
+              />
+              <button>确定</button>
+            </div>
           </div>
         </div>
       </div>
@@ -63,8 +78,9 @@
 <script>
 export default {
   name: 'auth',
-  data() {
+  data () {
     return {
+      current: 'login',
       opera: false,
       form: {
         username: '',
@@ -78,16 +94,16 @@ export default {
       loading: false
     }
   },
-  beforeRouteEnter(to, from, next) {
+  beforeRouteEnter (to, from, next) {
     next(vm => {
       localStorage.setItem('from', from.path)
     })
   },
   methods: {
-    change(val) {
+    change (val) {
       this.opera = val
     },
-    login() {
+    login () {
       if (this.form.username == '') {
         this.$message.error('请输入用户名')
         return
@@ -114,7 +130,8 @@ export default {
           this.loading = false
         })
     },
-    signup() {
+    signup () {
+      this.loading = true
       if (this.reg.username == '') {
         this.$message.error('请输入用户名')
         return
@@ -135,12 +152,22 @@ export default {
       this.axios
         .post(`${this.url}/signup/`, this.reg)
         .then(res => {
+          this.loading = false
           if (res.data.code === 200) {
-            window.location.reload()
+            this.$message({
+              message: '注册成功',
+              type: 'success'
+            })
+            this.current = 'login'
+            this.form.username = this.reg.username
+            this.reg = {
+              username: '',
+              password: '',
+              re_pass: ''
+            }
           } else {
             this.$message.error(res.data.msg)
           }
-          this.loading = false
         })
         .catch(err => {
           this.$message.error(err.message)
@@ -162,6 +189,17 @@ $h: 600px;
   justify-content: center;
   align-items: center;
   background: #f6f5f7;
+  .label {
+    cursor: pointer;
+  }
+  .lbf {
+    color: #aaa;
+    cursor: pointer;
+    transition: 0.2s;
+    &:hover {
+      color: #777;
+    }
+  }
   .box {
     height: $h;
     width: $w;

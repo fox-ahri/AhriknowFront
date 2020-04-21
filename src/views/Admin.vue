@@ -11,8 +11,8 @@
           active-text-color="#ffd04b"
         >
           <el-menu-item index="1" @click="$router.push('/admin')">管理中心</el-menu-item>
-          <el-menu-item index="2" style="float: right" @click="exit">退出</el-menu-item>
-          <el-menu-item index="3" style="float: right" @click="$router.push('/')">首页</el-menu-item>
+          <el-menu-item index="2" style="float: right;" @click="exit">退出</el-menu-item>
+          <el-menu-item index="3" style="float: right;" @click="$router.push('/')">首页</el-menu-item>
         </el-menu>
       </el-header>
       <el-container>
@@ -130,7 +130,7 @@ export default {
   methods: {
     auth(jur) {
       return (
-        this.jurisdictions.indexOf('狸知云笔记') > -1 ||
+        this.jurisdictions.indexOf(jur) > -1 ||
         this.user.username == 'ahriknow'
       )
     },

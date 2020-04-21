@@ -16,8 +16,8 @@
       :data="roles.filter(data => !search || data.name.toLowerCase().includes(search.toLowerCase()))"
       style="width: 100%"
     >
-      <el-table-column label="Name" prop="name"></el-table-column>
-      <el-table-column label="Describe" prop="describe"></el-table-column>
+      <el-table-column label="角色名" prop="name"></el-table-column>
+      <el-table-column label="角色描述" prop="describe"></el-table-column>
       <el-table-column align="right">
         <template slot="header" slot-scope="scope">
           <el-input v-model="search" size="mini" placeholder="输入关键字搜索" />

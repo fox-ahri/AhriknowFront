@@ -31,7 +31,7 @@ body {
   .el-tree-node__expand-icon {
     font-size: 22px;
   }
-  .hljs{
+  .hljs {
     padding: 12px;
     font-size: 16px;
   }

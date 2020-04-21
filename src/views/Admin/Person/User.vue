@@ -31,13 +31,13 @@
           </el-form>
         </template>
       </el-table-column>
-      <el-table-column label="Username" prop="username"></el-table-column>
-      <el-table-column label="Nickname" prop="nickname"></el-table-column>
-      <el-table-column label="Email" prop="email"></el-table-column>
-      <el-table-column label="Phone" prop="phone"></el-table-column>
-      <el-table-column label="Last Login" prop="last_login"></el-table-column>
-      <el-table-column label="Join Date" prop="create_time"></el-table-column>
-      <el-table-column label="Activated" width="86" align="center">
+      <el-table-column label="用户名" prop="username"></el-table-column>
+      <el-table-column label="昵称" prop="nickname"></el-table-column>
+      <el-table-column label="邮箱" prop="email"></el-table-column>
+      <el-table-column label="电话" prop="phone"></el-table-column>
+      <el-table-column label="上次登录" prop="last_login"></el-table-column>
+      <el-table-column label="注册时间" prop="create_time"></el-table-column>
+      <el-table-column label="是否可用" width="86" align="center">
         <template slot-scope="scope">
           <el-switch
             v-model="scope.row.activated"
@@ -47,7 +47,7 @@
           ></el-switch>
         </template>
       </el-table-column>
-      <el-table-column label="Opera" width="240">
+      <el-table-column label="管理" width="240">
         <template slot-scope="scope">
           <el-button size="mini" @click="handleEdit(scope.row)">更新</el-button>
           <el-button size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
