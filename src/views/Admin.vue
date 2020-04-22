@@ -62,6 +62,7 @@
                 <el-menu-item index="/admin/blog/article" v-if="auth('文章管理')">文章管理</el-menu-item>
                 <el-menu-item index="/admin/blog/edit" v-if="auth('新建文章')">新建文章</el-menu-item>
                 <el-menu-item index="/admin/blog/comment" v-if="auth('评论管理')">评论管理</el-menu-item>
+                <el-menu-item index="/admin/blog/follow" v-if="auth('我的关注')">我的关注</el-menu-item>
               </el-menu-item-group>
             </el-submenu>
             <el-submenu index="/admin/database" v-if="auth('数据库管理')">
@@ -106,7 +107,9 @@
           </el-menu>
         </el-aside>
         <el-main>
-          <router-view />
+          <transition name="component-fade" mode="out-in">
+            <router-view />
+          </transition>
         </el-main>
       </el-container>
     </el-container>
@@ -116,7 +119,7 @@
 <script>
 export default {
   name: 'admin',
-  data() {
+  data () {
     return {
       activeIndex: '1',
       active: '/admin/userinfo',
@@ -128,17 +131,17 @@ export default {
     }
   },
   methods: {
-    auth(jur) {
+    auth (jur) {
       return (
         this.jurisdictions.indexOf(jur) > -1 ||
         this.user.username == 'ahriknow'
       )
     },
-    exit() {
+    exit () {
       localStorage.clear()
       this.$router.push('/auth')
     },
-    get_jurisdictions() {
+    get_jurisdictions () {
       this.loading = true
       this.axios
         .get(`${this.url}/admin/person/jur/`)
@@ -157,7 +160,7 @@ export default {
         })
     }
   },
-  created() {
+  created () {
     if (!this.$store.state.token) {
       localStorage.clear()
       this.$router.push('/auth')
@@ -168,7 +171,7 @@ export default {
     this.active = this.$route.path
   },
   watch: {
-    '$store.state.refresh': function(v1, v2) {
+    '$store.state.refresh': function (v1, v2) {
       this.get_jurisdictions()
     }
   }
@@ -176,6 +179,14 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.component-fade-enter-active,
+.component-fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+.component-fade-enter,
+.component-fade-leave-to {
+  opacity: 0;
+}
 #admin {
   width: 100%;
   height: 100%;

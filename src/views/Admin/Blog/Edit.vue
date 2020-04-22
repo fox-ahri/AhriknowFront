@@ -118,7 +118,7 @@
         </div>
         <div v-else>
           <el-button @click="save_as_draft">保存为草稿</el-button>
-          <el-button type="primary" @click="publish">立即创建</el-button>
+          <el-button type="primary" @click="publish">立即发布</el-button>
         </div>
       </el-form-item>
     </el-form>

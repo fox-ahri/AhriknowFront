@@ -3,7 +3,7 @@
     <nav>
       <span class="logo" @click="$router.push('/')">AHRIKNOW</span>
       <router-link to="/view">View</router-link>
-      <router-link to="/blog/index?id=0">Blog</router-link>
+      <router-link to="/blog/index/article?id=0">Blog</router-link>
       <router-link to="/notebook/book">Notebook</router-link>
       <router-link to="/tools">Tools</router-link>
       <router-link class="console" to="/admin">控制台</router-link>

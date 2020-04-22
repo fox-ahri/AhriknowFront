@@ -2,8 +2,16 @@
   <div id="blog-read" class="blog-read">
     <div class="container">
       <div class="markdown-body" v-html="html"></div>
-      <el-input v-show="reply" type="textarea" :row="4" v-model="content"></el-input>
+      <div class="info">
+        <i
+          class="iconfont icon-l-fabulous"
+          :class="{'active': active}"
+          @click="fabulous"
+        >{{article.fabulous}}</i>
+        <i class="iconfont icon-view1">{{article.views}}</i>
+      </div>
       <el-divider></el-divider>
+      <el-input v-show="reply" type="textarea" :row="4" v-model="content"></el-input>
       <h3 v-if="!article.commented">次文章已关闭评论功能</h3>
       <div class="opera" v-if="article.commented">
         <el-button v-show="!reply" @click="reply = true" type="text">留言</el-button>
@@ -31,7 +39,7 @@ const md = require('markdown-it')({
   linkify: false,
   typographer: false,
   quotes: '“”‘’',
-  highlight: function(str, lang) {
+  highlight: function (str, lang) {
     if (lang && hljs.getLanguage(lang)) {
       try {
         return (
@@ -39,7 +47,7 @@ const md = require('markdown-it')({
           hljs.highlight(lang, str, true).value +
           '</code></pre>'
         )
-      } catch (__) {}
+      } catch (__) { }
     }
 
     return (
@@ -52,17 +60,40 @@ export default {
   components: {
     Comment
   },
-  data() {
+  data () {
     return {
       article: {},
       html: '',
       comments: [],
       content: '',
-      reply: false
+      reply: false,
+      active: false
     }
   },
   methods: {
-    add() {
+    fabulous () {
+      this.axios
+        .post(`${this.url}/admin/blog/fabulous/`, {
+          fabulous: !this.active,
+          who: this.$store.state.userinfo.id,
+          what: this.$route.query.id
+        })
+        .then(res => {
+          if (res.data.code === 200) {
+            if (this.active) {
+              this.article.fabulous--
+            } else {
+              this.article.fabulous++
+            }
+            this.active = !this.active
+          } else {
+            this.$message.error(res.data.msg)
+          }
+        })
+        .catch(err => {
+          this.$message.error(err.message)
+        })    },
+    add () {
       if (this.content.trim().length < 1) {
         this.$message('请输入有效的内容')
         return
@@ -89,12 +120,17 @@ export default {
           this.$message.error(err.message)
         })
     },
-    get_article(id) {
+    get_article (id) {
       this.axios
-        .get(`${this.url}/index/blog/article/${id}`)
+        .get(`${this.url}/index/blog/article/${id}`, {
+          params: {
+            u: this.$store.state.userinfo.id
+          }
+        })
         .then(res => {
           if (res.data.code === 200) {
             this.article = res.data.data
+            this.active = res.data.data.active
             this.html = md.render(res.data.data.content)
           } else {
             this.$message({
@@ -110,7 +146,7 @@ export default {
           })
         })
     },
-    get_tree(data, id = null, depth = 0) {
+    get_tree (data, id = null, depth = 0) {
       let tmp = []
       data.forEach(comment => {
         if (comment.parent == id) {
@@ -123,7 +159,7 @@ export default {
       })
       return tmp
     },
-    get_comments(id) {
+    get_comments (id) {
       this.axios
         .get(`${this.url}/index/blog/comment/${id}`)
         .then(res => {
@@ -139,7 +175,7 @@ export default {
         })
     }
   },
-  mounted() {
+  mounted () {
     let id
     if (this.$route.query.hasOwnProperty('id')) {
       id = this.$route.query.id
@@ -152,6 +188,7 @@ export default {
         })
       } else {
         this.$router.push({ name: 'index-blog-index' })
+        return
       }
     }
     this.get_article(id)
@@ -163,16 +200,25 @@ export default {
 <style lang="scss" scoped>
 #blog-read {
   width: 100%;
-  //   height: 100%;
+  min-height: 100%;
   background: #f5f6f7;
-  //   overflow: hidden;
   .container {
-    // height: 100%;
-    // overflow: auto;
+    min-height: 100%;
     width: 1100px;
     margin: 0 auto;
     background: #fff;
     padding: 50px;
+    .info {
+      padding-top: 20px;
+      text-align: right;
+      i {
+        margin-left: 15px;
+        cursor: pointer;
+      }
+      .active {
+        color: #e6a23c;
+      }
+    }
     .opera {
       text-align: right;
     }
