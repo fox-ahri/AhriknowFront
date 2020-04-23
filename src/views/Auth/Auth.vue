@@ -104,11 +104,13 @@ export default {
       this.opera = val
     },
     login () {
-      if (this.form.username == '') {
+      this.form.username = this.form.username.trim()
+      this.form.password = this.form.password.trim()
+      if (this.form.username.length <= 0) {
         this.$message.error('请输入用户名')
         return
       }
-      if (this.form.password == '') {
+      if (this.form.password.length <= 0) {
         this.$message.error('请输入密码')
         return
       }
@@ -132,15 +134,18 @@ export default {
     },
     signup () {
       this.loading = true
-      if (this.reg.username == '') {
+      this.reg.username = this.reg.username.trim()
+      this.reg.password = this.reg.password.trim()
+      this.reg.re_pass = this.reg.re_pass.trim()
+      if (this.reg.username.length <= 0) {
         this.$message.error('请输入用户名')
         return
       }
-      if (this.reg.password == '') {
+      if (this.reg.password.length <= 0) {
         this.$message.error('请输入用密码')
         return
       }
-      if (this.reg.re_pass == '') {
+      if (this.reg.re_pass.length <= 0) {
         this.$message.error('请输入确认密码')
         return
       }
