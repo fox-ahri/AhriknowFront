@@ -12,7 +12,6 @@
       <el-button @click="dialogVisible = true">新 建</el-button>
     </div>
     <el-divider></el-divider>
-    <el-tag>URL: database.ahriknow.com</el-tag>
     <el-table
       :data="dbs.filter(data => !search || data.dbname.toLowerCase().includes(search.toLowerCase()))"
       style="width: 100%"
@@ -23,7 +22,12 @@
           <el-tag :type="scope.row.type == 'mysql'?'primary':'success'">{{scope.row.type}}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="数据库名称" prop="dbname"></el-table-column>
+      <el-table-column width="290">
+        <template slot="header">数据库名称
+          <el-tag>URL: database.ahriknow.com</el-tag>
+        </template>
+        <template slot-scope="scope">{{scope.row.dbname}}</template>
+      </el-table-column>
       <el-table-column label="用户名" prop="username"></el-table-column>
       <el-table-column label="密码">
         <template slot-scope="scope">{{scope.row.password}}</template>
@@ -61,7 +65,7 @@
 <script>
 export default {
   name: 'db',
-  data() {
+  data () {
     return {
       dbs: [],
       search: '',
@@ -71,11 +75,11 @@ export default {
     }
   },
   methods: {
-    close() {
+    close () {
       this.form = {}
       this.dialogVisible = false
     },
-    handlerAdd() {
+    handlerAdd () {
       this.loading = true
       this.axios
         .post(`${this.url}/admin/database/db/`, this.form)
@@ -97,7 +101,7 @@ export default {
           this.loading = false
         })
     },
-    handleDelete(val) {
+    handleDelete (val) {
       this.$confirm('此操作将永久删除该数据库, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -131,7 +135,7 @@ export default {
           })
         })
     },
-    get_dbs() {
+    get_dbs () {
       this.loading = true
       this.axios
         .get(`${this.url}/admin/database/db/`)
@@ -149,7 +153,7 @@ export default {
         })
     }
   },
-  mounted() {
+  mounted () {
     this.get_dbs()
   }
 }

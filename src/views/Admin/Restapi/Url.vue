@@ -138,7 +138,7 @@ export default {
     get_urls() {
       this.loading = true
       this.axios
-        .get(`${this.url}/admin/restapi/url/`)
+        .get(`${this.url}/admin/restapi/url/${this.project}/`)
         .then(res => {
           this.loading = false
           if (res.data.code === 200) {
