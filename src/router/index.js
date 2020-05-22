@@ -4,10 +4,16 @@ import Index from "../views/Index.vue";
 import Home from "../views/Index/Home.vue";
 import Tools from "./tools";
 import Admin from "./admin";
+import DBMS from "./dbms";
 
 Vue.use(VueRouter);
 
 const routes = [
+  {
+    path: "/mysql/table",
+    name: "mysql-table",
+    component: () => import("../components/mysql/Table.vue"),
+  },
   {
     path: "/view",
     name: "view",
@@ -71,6 +77,13 @@ const routes = [
     component: () => import("../views/Tools/Tools.vue"),
     redirect: "/tools/welcome",
     children: Tools,
+  },
+  {
+    path: "/dbms",
+    name: "dbms",
+    component: () => import("../views/DBMS/DBMS.vue"),
+    redirect: "/dbms/auth",
+    children: DBMS,
   },
   {
     path: "/admin",

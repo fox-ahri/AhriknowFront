@@ -23,6 +23,10 @@
           <i class="iconfont icon-wulianwang-ocr"></i>
           <span slot="title">文字识别</span>
         </el-menu-item>
+        <el-menu-item index="/tools/radix">
+          <i class="iconfont icon-sort-numeric-up-alt-solid"></i>
+          <span slot="title">进制转换</span>
+        </el-menu-item>
       </el-menu>
     </aside>
     <section class="section">

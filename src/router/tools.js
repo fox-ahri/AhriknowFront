@@ -19,4 +19,9 @@ export default [
 		name: 'tools-ocr',
 		component: () => import('../views/Tools/OCR.vue'),
 	},
+	{
+		path: 'radix',
+		name: 'tools-radix',
+		component: () => import('../views/Tools/Radix.vue'),
+	},
 ]

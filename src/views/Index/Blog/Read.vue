@@ -1,6 +1,6 @@
 <template>
   <div id="blog-read" class="blog-read">
-    <div class="container">
+    <div class="container" v-loading="loading">
       <div class="markdown-body" v-html="html"></div>
       <div class="info">
         <i
@@ -12,13 +12,13 @@
       </div>
       <el-divider></el-divider>
       <el-input v-show="reply" type="textarea" :row="4" v-model="content"></el-input>
-      <h3 v-if="!article.commented">次文章已关闭评论功能</h3>
+      <h3 v-if="!article.commented">此文章已关闭评论功能</h3>
       <div class="opera" v-if="article.commented">
         <el-button v-show="!reply" @click="reply = true" type="text">留言</el-button>
         <el-button v-show="reply" @click="reply = false" type="text">取消</el-button>
         <el-button v-show="reply" @click="add" type="text">确定</el-button>
       </div>
-      <div class="comment" v-if="article.commented">
+      <div class="comment" v-if="article.commented" v-loading="loading2">
         <Comment :comments="comments" />
       </div>
       <div style="height: 300px"></div>
@@ -67,7 +67,9 @@ export default {
       comments: [],
       content: '',
       reply: false,
-      active: false
+      active: false,
+      loading: false,
+      loading2: false
     }
   },
   methods: {
@@ -98,13 +100,15 @@ export default {
         this.$message('请输入有效的内容')
         return
       }
+      this.loading2 = true
       this.axios
         .post(`${this.url}/admin/blog/comment/`, {
           parent: null,
           content: this.content,
-          article: this.$route.query.id
+          article: this.d(this.$route.query.id)
         })
         .then(res => {
+          this.loading2 = false
           if (res.data.code === 200) {
             let comment = res.data.data
             comment.reply = false
@@ -117,10 +121,12 @@ export default {
           }
         })
         .catch(err => {
+          this.loading2 = false
           this.$message.error(err.message)
         })
     },
     get_article (id) {
+      this.loading = true
       this.axios
         .get(`${this.url}/index/blog/article/${id}`, {
           params: {
@@ -128,6 +134,7 @@ export default {
           }
         })
         .then(res => {
+          this.loading = false
           if (res.data.code === 200) {
             this.article = res.data.data
             this.active = res.data.data.active
@@ -140,6 +147,7 @@ export default {
           }
         })
         .catch(err => {
+          this.loading = false
           this.$message({
             message: '获取文章失败',
             type: 'warning'
@@ -176,23 +184,11 @@ export default {
     }
   },
   mounted () {
-    let id
     if (this.$route.query.hasOwnProperty('id')) {
-      id = this.$route.query.id
-    } else {
-      if (localStorage.getItem('article')) {
-        id = localStorage.getItem('article')
-        this.$router.push({
-          name: 'index-blog-read',
-          query: { id: id }
-        })
-      } else {
-        this.$router.push({ name: 'index-blog-index' })
-        return
-      }
+      let id = this.d(this.$route.query.id)
+      this.get_article(id)
+      this.get_comments(id)
     }
-    this.get_article(id)
-    this.get_comments(id)
   }
 }
 </script>
@@ -204,7 +200,7 @@ export default {
   background: #f5f6f7;
   .container {
     min-height: 100%;
-    width: 1100px;
+    width: 1000px;
     margin: 0 auto;
     background: #fff;
     padding: 50px;
@@ -225,6 +221,15 @@ export default {
     .comment {
       background: #fff;
       padding-top: 20px;
+    }
+  }
+}
+
+@media screen and (max-width: 1100px) {
+  #blog-read {
+    .container {
+      width: 98%;
+      margin: 0 1%;
     }
   }
 }

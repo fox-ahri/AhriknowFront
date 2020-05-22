@@ -41,7 +41,7 @@ const md = require('markdown-it')({
   // 高亮函数，会返回转义的 HTML。
   // 如果源字符串未更改，且应该进行外部的转义，或许返回 ''
   // 如果结果以 <pre ... 开头，内部包装器则会跳过。
-  highlight: function(str, lang) {
+  highlight: function (str, lang) {
     if (lang && hljs.getLanguage(lang)) {
       try {
         return (
@@ -49,7 +49,7 @@ const md = require('markdown-it')({
           hljs.highlight(lang, str, true).value +
           '</code></pre>'
         )
-      } catch (__) {}
+      } catch (__) { }
     }
 
     return (
@@ -62,7 +62,7 @@ export default {
   components: {
     RECORD
   },
-  data() {
+  data () {
     return {
       content: '# your markdown content',
       html: '',
@@ -81,7 +81,7 @@ export default {
     }
   },
   methods: {
-    get_index_show() {
+    get_index_show () {
       this.loading = true
       this.axios
         .get(`${this.url}/index/setting/index-show/`)
@@ -100,7 +100,7 @@ export default {
         })
     }
   },
-  mounted() {
+  mounted () {
     this.get_index_show()
   }
 }
@@ -117,6 +117,15 @@ export default {
       width: 100%;
       height: 100%;
       background: #fffc;
+    }
+  }
+}
+
+@media screen and (max-width: 1150px) {
+  #home {
+    .index-show {
+      width: 90%;
+      margin: 30px 5%;
     }
   }
 }

@@ -1,16 +1,44 @@
 <template>
   <div id="index-blog-article" class="index-blog-article">
+    <div class="menu">
+      <div class="mine">
+        <el-menu class="el-menu-vertical-demo" mode="horizontal" menu-trigger="hover">
+          <el-submenu index="1">
+            <template slot="title">
+              <i class="el-icon-s-grid"></i>
+              <span>{{tab}}</span>
+            </template>
+            <el-menu-item index="1-1" @click="change_tab(0)">推荐</el-menu-item>
+            <el-menu-item v-for="i in tabs" :key="i.id" @click="change_tab(i.id, i.name)">{{i.name}}</el-menu-item>
+            <el-menu-item index="1-e" @click="$router.push({name: 'index'})">
+              <i class="el-icon-back"></i>
+            </el-menu-item>
+          </el-submenu>
+          <el-menu-item v-if="mine.id == ''" index="2" @click="dialogVisible = true">登 录</el-menu-item>
+          <el-submenu v-else index="3">
+            <template slot="title">
+              <i class="el-icon-user"></i>
+              <span>{{mine.nickname == '' ? mine.username : mine.nickname}}</span>
+            </template>
+            <el-menu-item index="3-1" @click="$router.push({name: 'welcome'})">后台管理</el-menu-item>
+            <el-menu-item index="3-2" @click="$router.push({name: 'blog-follow'})">我的关注</el-menu-item>
+            <el-menu-item index="3-3" @click="$router.push({name: 'blog-article'})">写博客</el-menu-item>
+            <el-menu-item index="3-4" @click="exit">退出</el-menu-item>
+          </el-submenu>
+        </el-menu>
+      </div>
+    </div>
     <div class="container">
       <nav class="nav" :style="`height: ${height}px`">
         <ul>
-          <li :class="{'activated': activated == 0}" @click="change_tab(0)">推荐</li>
+          <li :class="{'activated': activated == 0}" @click="change_tab(0, '推荐')">推荐</li>
           <li
             v-for="i in tabs"
             :key="i.id"
             :class="{'activated': activated == i.id}"
-            @click="change_tab(i.id)"
+            @click="change_tab(i.id, i.name)"
           >{{i.name}}</li>
-          <li @click="$router.go(-1)">
+          <li @click="$router.push({name: 'index'})">
             <i class="el-icon-back"></i>
           </li>
         </ul>
@@ -60,6 +88,8 @@
               <el-menu-item index="1-4" @click="exit">退出</el-menu-item>
             </el-submenu>
           </el-menu>
+          <br />
+          <word-cloud-chart id="echarts05" title :data="wordCloud" />
         </div>
       </div>
     </div>
@@ -81,8 +111,12 @@
 </template>
 
 <script>
+import WordCloudChart from '@/components/WordCloudChart.vue'
 export default {
   name: 'index-blog-article',
+  components: {
+    'word-cloud-chart': WordCloudChart
+  },
   data () {
     return {
       activated: 0,
@@ -99,7 +133,78 @@ export default {
       form: {
         username: '',
         password: ''
-      }
+      },
+      tab: '推荐',
+      wordCloud: [
+        {
+          name: "程序人生",
+          value: 15000
+        },
+        {
+          name: "Python",
+          value: 10081
+        },
+        {
+          name: "Java",
+          value: 9386
+        },
+        {
+          name: "GO",
+          value: 7500
+        },
+        {
+          name: "C/C++",
+          value: 7500
+        },
+        {
+          name: "Node",
+          value: 6500
+        },
+        {
+          name: "前端",
+          value: 6500
+        },
+        {
+          name: "后端",
+          value: 6000
+        },
+        {
+          name: "VUE",
+          value: 4500
+        },
+        {
+          name: "React",
+          value: 3800
+        },
+        {
+          name: "Angular",
+          value: 3000
+        },
+        {
+          name: "Javascript",
+          value: 2500
+        },
+        {
+          name: "AI",
+          value: 2300
+        },
+        {
+          name: "移动端",
+          value: 2000
+        },
+        {
+          name: "小程序",
+          value: 1900
+        },
+        {
+          name: "新闻",
+          value: 1800
+        },
+        {
+          name: "其他",
+          value: 1700
+        }
+      ]
     }
   },
   methods: {
@@ -138,19 +243,20 @@ export default {
         })
     },
     read (id) {
-      localStorage.setItem('article', id)
+      localStorage.setItem('article', this.e(id))
       const h = this.$router.resolve({
         name: 'index-blog-read',
-        query: { id: id }
+        query: { id: this.e(id) }
       })
       window.open(h.href, '_blank')
     },
-    change_tab (id) {
+    change_tab (id, name = '推荐') {
+      this.tab = name
       this.activated = id
       this.articles = []
       this.page = 1
       this.get_articles()
-      this.$router.push(`/blog/index?id=${id}`)
+      this.$router.push(`/blog/index?_=${this.e(id)}`)
     },
     get_tabs () {
       this.loading = true
@@ -182,23 +288,34 @@ export default {
         })
         .then(res => {
           this.loading = false
-          this.page++
-          res.data.results.forEach(article => {
-            this.articles.push(article)
-          })
+          if (res.data.hasOwnProperty('code') && res.data.code == 404) {
+            this.$message({
+              message: '没有更多了',
+              type: 'warning'
+            })
+          } else {
+            this.page++
+            res.data.results.forEach(article => {
+              this.articles.push(article)
+            })
+          }
         })
         .catch(err => {
           this.loading = false
-          this.$message({
-            message: '没有更多了',
-            type: 'warning'
-          })
+          if (err.response.status === 404) {
+            this.$message({
+              message: '没有更多了',
+              type: 'warning'
+            })
+          } else {
+            this.$message.error(err.message)
+          }
         })
     }
   },
   mounted () {
     this.mine = this.$store.state.userinfo || { id: '' }
-    this.activated = this.$route.query.id
+    this.activated = this.d(this.$route.query._)
     this.page = 1
     this.get_tabs()
     this.get_articles()
@@ -212,6 +329,15 @@ export default {
   height: 100%;
   background: #f5f6f7;
   color: #555;
+  .menu {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 500px;
+    z-index: 99999;
+  }
   .container {
     width: 1200px;
     margin: 0 auto;
@@ -282,8 +408,15 @@ export default {
             overflow: hidden;
             text-overflow: ellipsis;
             cursor: pointer;
+            transition: 0.3s;
+            .el-tag {
+              transition: 0.3s;
+            }
             &:hover {
               color: #ff3333;
+              .el-tag {
+                margin-right: 4px;
+              }
             }
           }
           .footer {
@@ -338,6 +471,25 @@ export default {
       width: 240px;
       height: 600px;
       background: #fff;
+    }
+  }
+}
+
+@media screen and (max-width: 1150px) {
+  #index-blog-article {
+    .container {
+      width: 98%;
+      padding: 71px 1%;
+    }
+    .nav {
+      display: none;
+    }
+    .right {
+      display: none;
+    }
+    .menu {
+      display: block;
+      z-index: 0;
     }
   }
 }

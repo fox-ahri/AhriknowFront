@@ -3,11 +3,30 @@
     <nav>
       <span class="logo" @click="$router.push('/')">AHRIKNOW</span>
       <router-link to="/view">View</router-link>
-      <router-link to="/blog/index/article?id=0">Blog</router-link>
+      <router-link :to="`/blog/index/article?_=${e(0)}`">Blog</router-link>
       <router-link to="/notebook/book">Notebook</router-link>
       <router-link to="/tools">Tools</router-link>
+      <router-link to="/dbms/auth">DBMS</router-link>
       <router-link class="console" to="/admin">控制台</router-link>
     </nav>
+    <el-menu
+      class="el-menu-vertical-demo"
+      mode="horizontal"
+      menu-trigger="hover"
+      background-color="#000c"
+    >
+      <el-submenu index="1">
+        <template slot="title">
+          <span>AHRIKNOW</span>
+        </template>
+        <el-menu-item index="1-1" @click="$router.push('/view')">View</el-menu-item>
+        <el-menu-item index="1-2" @click="$router.push(`/blog/index/article?_=${e(0)}`)">Blog</el-menu-item>
+        <el-menu-item index="1-3" @click="$router.push('/notebook/book')">Notebook</el-menu-item>
+        <el-menu-item index="1-4" @click="$router.push('/tools')">Tools</el-menu-item>
+        <el-menu-item index="1-4" @click="$router.push('/dbms/auth')">DBMS</el-menu-item>
+        <el-menu-item index="1-4" @click="$router.push('/admin')">控制台</el-menu-item>
+      </el-submenu>
+    </el-menu>
     <section>
       <img src="../assets/bg.jpg" id="bg" ref="bg" />
       <img src="../assets/moon.png" id="moon" ref="moon" />
@@ -22,10 +41,10 @@
 <script>
 export default {
   name: 'index',
-  data() {
+  data () {
     return {}
   },
-  mounted() {
+  mounted () {
     let bg = this.$refs.bg
     let moon = this.$refs.moon
     let mountain = this.$refs.mountain
@@ -50,6 +69,16 @@ export default {
   overflow: hidden;
   background-color: #0a2a43;
   min-height: 1500px;
+  .el-menu {
+    z-index: 11;
+    display: none;
+    border: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+  }
   nav {
     z-index: 11;
     position: fixed;
@@ -125,6 +154,20 @@ export default {
   }
   #road {
     z-index: 2;
+  }
+}
+
+@media screen and (max-width: 1150px) {
+  #index {
+    .el-menu {
+      display: block;
+    }
+    nav {
+      display: none;
+    }
+    #moon {
+      display: none;
+    }
   }
 }
 </style>

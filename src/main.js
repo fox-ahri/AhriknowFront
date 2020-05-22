@@ -19,6 +19,10 @@ Vue.config.productionTip = false
 Vue.prototype.url = "https://admin.ahriknow.com"
 // Vue.prototype.url = 'http://127.0.0.1:8001'
 
+Vue.prototype.e = num => (1000 + num).toString(36)
+
+Vue.prototype.d = num => parseInt(num, 36) - 1000
+
 const CancelToken = axios.CancelToken
 // const source = CancelToken.source()
 

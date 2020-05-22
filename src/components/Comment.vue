@@ -39,19 +39,19 @@ const md = require('markdown-it')({
   linkify: false,
   typographer: false,
   quotes: '“”‘’',
-  highlight: function(str, lang) {
+  highlight: function (str, lang) {
     if (lang && hljs.getLanguage(lang)) {
       try {
         return (
-          '<pre class="hljs" style="font-size: 16px"><code>' +
+          '<pre class="hljs" style="font-size: 14px"><code style="font-size: 14px">' +
           hljs.highlight(lang, str, true).value +
           '</code></pre>'
         )
-      } catch (__) {}
+      } catch (__) { }
     }
 
     return (
-      '<pre class="hljs"><code>' + md.utils.escapeHtml(str) + '</code></pre>'
+      '<pre class="hljs"><code style="font-size: 14px">' + md.utils.escapeHtml(str) + '</code></pre>'
     )
   }
 })
@@ -59,10 +59,10 @@ export default {
   name: 'comment',
   props: ['comments'],
   methods: {
-    html(val) {
+    html (val) {
       return md.render(val)
     },
-    toreply(val) {
+    toreply (val) {
       this.axios
         .post(`${this.url}/admin/blog/comment/`, {
           parent: val.id,
@@ -115,6 +115,22 @@ export default {
     }
     .reply {
       padding-left: 60px;
+    }
+  }
+}
+
+@media screen and (max-width: 1100px) {
+  #comment {
+    .children {
+      padding-left: 20px;
+    }
+  }
+}
+
+@media screen and (max-width: 900px) {
+  #comment {
+    .date {
+      display: none;
     }
   }
 }

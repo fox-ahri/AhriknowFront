@@ -96,7 +96,16 @@ export default {
   },
   beforeRouteEnter (to, from, next) {
     next(vm => {
-      localStorage.setItem('from', from.path)
+      let tmp = []
+      for (let k in from.query) {
+        tmp.push(k + '=' + from.query[k])
+      }
+      if (tmp.length > 0) {
+        localStorage.setItem('from', from.path + '?' + tmp.join('&'))
+      }
+      else {
+        localStorage.setItem('from', from.path)
+      }
     })
   },
   methods: {
