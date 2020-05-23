@@ -1,3 +1,9 @@
+<!--
+ * @Description: Project Index Page
+ * @Author: Ahri
+ * @Date: 2020-04-21 13:15:49
+ * @LastEditTime: 2020-05-23 15:11:51
+--> 
 <template>
   <div id="index" class="index">
     <nav>
